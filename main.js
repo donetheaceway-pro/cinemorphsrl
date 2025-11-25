@@ -1,10 +1,11 @@
-/* CinemorphSRL — Nova Deploy Pipeline
-   Static site logic (no real deploy from browser).
-   "Deploy Now" = marks next obstacle deploy ready + reminds you to commit.
+/* CinemorphSRL — Nova Deploy Pipeline (Dashboard Only)
+   - Pipeline + Mission Status stay the same
+   - Deploy buttons live ONLY on dashboard
+   - Buttons call /api/deploy (Vercel function)
 */
 
-const STORAGE_KEY = "cinemorph_pipeline_v1";
-const MOTION_KEY = "cinemorph_motion_v1";
+const STORAGE_KEY = "cinemorph_pipeline_v2";
+const MOTION_KEY  = "cinemorph_motion_v1";
 
 const obstacles = [
   { title: "Dashboard routed & stable", status: "working" },
@@ -12,40 +13,44 @@ const obstacles = [
   { title: "Nova Deploy Pipeline integrated", status: "ready" },
   { title: "Cineverse portal UI expansion", status: "next" },
   { title: "Game portal UI expansion", status: "pending" },
+  { title: "Voice portal integration", status: "pending" },
   { title: "Universe navigation + marketplace tie-ins", status: "pending" }
 ];
 
-const statusOrder = ["working", "ready", "next", "pending"];
 const badgeText = s => s.toUpperCase();
 
-const pipelineList = document.getElementById("pipelineList");
-const missionText = document.getElementById("missionText");
+const pipelineList  = document.getElementById("pipelineList");
+const missionText   = document.getElementById("missionText");
 const missionBanner = document.getElementById("missionBanner");
-const novaLog = document.getElementById("novaLog");
-const novaState = document.getElementById("novaState");
-const deployNowTop = document.getElementById("deployNowTop");
-const motionToggle = document.getElementById("motionToggle");
+const novaLog       = document.getElementById("novaLog");
+const novaState     = document.getElementById("novaState");
+const deployNowTop  = document.getElementById("deployNowTop");
+const motionToggle  = document.getElementById("motionToggle");
+
+// New dashboard deploy panel buttons (must exist in index.html)
+const deployCineBtn  = document.getElementById("deployCineBtn");
+const deployGameBtn  = document.getElementById("deployGameBtn");
+const deployVoiceBtn = document.getElementById("deployVoiceBtn");
+const deployAllBtn   = document.getElementById("deployAllBtn");
 
 let state = loadState();
 
 // ---------- Motion Toggle ----------
 initMotion();
-
 function initMotion(){
   const saved = localStorage.getItem(MOTION_KEY);
   const motionOn = saved !== "off"; // default ON
   setMotion(motionOn);
 
-  motionToggle.addEventListener("click", () => {
+  motionToggle?.addEventListener("click", () => {
     const nowOn = !document.body.classList.contains("animated");
     setMotion(nowOn);
   });
 }
-
 function setMotion(on){
   document.body.classList.toggle("animated", on);
   localStorage.setItem(MOTION_KEY, on ? "on" : "off");
-  motionToggle.textContent = `Motion: ${on ? "ON" : "OFF"}`;
+  if (motionToggle) motionToggle.textContent = `Motion: ${on ? "ON" : "OFF"}`;
 }
 
 // ---------- State ----------
@@ -56,11 +61,9 @@ function loadState(){
   }catch(e){}
   return { obstacles: obstacles.map(o => ({...o})), log: [] };
 }
-
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
-
 function log(msg){
   const time = new Date().toLocaleString();
   state.log.unshift({ msg, time });
@@ -68,22 +71,17 @@ function log(msg){
   renderLog();
 }
 
-function getNextDeployReady(){
-  // first "next", else first "ready" after working, else null
-  return state.obstacles.findIndex(o => o.status === "next")
-      ?? state.obstacles.findIndex(o => o.status === "ready");
-}
-
 // ---------- Rendering ----------
 renderAll();
-
 function renderAll(){
   renderPipeline();
   renderMission();
   renderLog();
+  wireDeployPanel();   // attach button events once the DOM is ready
 }
 
 function renderPipeline(){
+  if (!pipelineList) return;
   pipelineList.innerHTML = "";
 
   state.obstacles.forEach((o, i) => {
@@ -125,6 +123,8 @@ function renderPipeline(){
 }
 
 function renderMission(){
+  if (!missionText || !missionBanner || !deployNowTop || !novaState) return;
+
   const nextIdx = state.obstacles.findIndex(o => o.status === "next");
   const readyIdxs = state.obstacles
     .map((o, i) => o.status === "ready" ? i : -1)
@@ -152,6 +152,7 @@ function renderMission(){
 }
 
 function renderLog(){
+  if (!novaLog) return;
   novaLog.innerHTML = "";
   if(state.log.length === 0){
     const empty = document.createElement("div");
@@ -172,16 +173,14 @@ function renderLog(){
   });
 }
 
-// ---------- Actions ----------
+// ---------- Pipeline Actions ----------
 function onLaunch(i){
-  // set launched item to working
   state.obstacles = state.obstacles.map((o, idx) => {
     if(idx === i) return {...o, status:"working"};
     if(o.status === "working") return {...o, status:"ready"};
     return o;
   });
 
-  // if it was "next", slide a "next" down if needed
   advanceNext();
   log(`Launched: ${state.obstacles[i].title}`);
   saveState();
@@ -189,9 +188,7 @@ function onLaunch(i){
 }
 
 function onComplete(i){
-  // mark current working as ready-complete and move next up
-  state.obstacles[i].status = "ready"; // stays green to show done-ready
-  // after completion, push a true next item
+  state.obstacles[i].status = "ready";
   advanceNext(true);
   log(`Completed: ${state.obstacles[i].title}`);
   saveState();
@@ -199,27 +196,82 @@ function onComplete(i){
 }
 
 function advanceNext(force=false){
-  // If there is already a "next" and not forcing, keep it.
   if(!force && state.obstacles.some(o => o.status === "next")) return;
-
-  // find first pending after last ready/working
   const idx = state.obstacles.findIndex(o => o.status === "pending");
   if(idx >= 0){
     state.obstacles[idx].status = "next";
   }
 }
 
-// Deploy Now (top mission button)
-deployNowTop.addEventListener("click", () => {
-  const idx = state.obstacles.findIndex(o => o.status === "next");
-  if(idx < 0){
-    alert("Nothing is marked NEXT. Use Launch on the next obstacle first.");
-    return;
+// ---------- Real Deploy (Dashboard Buttons) ----------
+async function deployModule(moduleName, buttonEl){
+  try{
+    if (buttonEl){
+      buttonEl.disabled = true;
+      buttonEl.dataset.prev = buttonEl.textContent;
+      buttonEl.textContent = "Deploying…";
+      buttonEl.classList.add("deploying");
+    }
+
+    const message = `Nova Deploy: ${moduleName} — ${new Date().toISOString()}`;
+
+    const resp = await fetch("/api/deploy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, files: [] }) // files optional for future auto-placement
+    });
+
+    const data = await resp.json();
+
+    if(!resp.ok || !data.ok){
+      throw new Error(data.error || "Deploy failed");
+    }
+
+    log(`Deployed: ${moduleName}`);
+    if (buttonEl){
+      buttonEl.textContent = "Deployed ✓";
+      buttonEl.classList.remove("deploying");
+      buttonEl.classList.add("deployed");
+      setTimeout(() => {
+        buttonEl.textContent = buttonEl.dataset.prev || "Deploy";
+        buttonEl.disabled = false;
+        buttonEl.classList.remove("deployed");
+      }, 1800);
+    }
+  }catch(err){
+    log(`Deploy error (${moduleName}): ${err.message}`);
+    if (buttonEl){
+      buttonEl.textContent = "Error — retry";
+      buttonEl.classList.remove("deploying");
+      buttonEl.classList.add("error");
+      setTimeout(() => {
+        buttonEl.textContent = buttonEl.dataset.prev || "Deploy";
+        buttonEl.disabled = false;
+        buttonEl.classList.remove("error");
+      }, 2200);
+    }
   }
-  log(`Deploy ready: ${state.obstacles[idx].title}`);
-  alert(
-    `Deploy ready: "${state.obstacles[idx].title}".\n\nNext move: commit/push to GitHub to trigger Vercel auto-deploy.`
-  );
-  saveState();
-  renderAll();
-});
+}
+
+function wireDeployPanel(){
+  // only wire once
+  if (wireDeployPanel.done) return;
+  wireDeployPanel.done = true;
+
+  deployCineBtn?.addEventListener("click", () => deployModule("Cineverse Portal", deployCineBtn));
+  deployGameBtn?.addEventListener("click", () => deployModule("Game Portal", deployGameBtn));
+  deployVoiceBtn?.addEventListener("click", () => deployModule("Voice Portal", deployVoiceBtn));
+  deployAllBtn?.addEventListener("click", () => deployModule("Deploy All Portals", deployAllBtn));
+
+  // Top mission button deploys whatever is currently NEXT/READY
+  deployNowTop?.addEventListener("click", () => {
+    const idx = state.obstacles.findIndex(o => o.status === "next");
+    const focusIdx = idx >= 0 ? idx : state.obstacles.findIndex(o => o.status === "ready");
+    if (focusIdx < 0){
+      alert("No obstacle is deploy ready yet.");
+      return;
+    }
+    const focusName = state.obstacles[focusIdx].title;
+    deployModule(focusName, deployNowTop);
+  });
+}
