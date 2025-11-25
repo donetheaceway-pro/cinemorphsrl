@@ -129,3 +129,75 @@ setInterval(() => {
 
 }, 30000); // every 30 seconds
 
+/* ============================================================
+   SUPERNOVA — FULL AUTOMATION UPGRADE
+   Mode B: Auto AFTER your confirmation
+   Includes:
+   - Auto-Flagging
+   - Auto-Detection
+   - Auto-Build Queue
+   - Next-Obstacle Suggestions
+============================================================ */
+
+/* GLOBAL STATE */
+let novaApproved = false;
+let novaDeploying = false;
+
+/* Detect changes via Nova-generated flags */
+function novaFlagChange() {
+  localStorage.setItem("nova_update_flag", Date.now());
+  log("Nova flagged a new update.");
+}
+
+/* Auto-Flagging: whenever Nova prepares code (triggered by your requests) */
+window.novaPrepareBuild = function(taskName = "Unnamed Task") {
+  log(`Nova prepared: ${taskName}`);
+  novaFlagChange();
+};
+
+/* Listen for your confirm button */
+document.getElementById("confirmDeployBtn")?.addEventListener("click", () => {
+  novaApproved = true;
+  log("Auto-build enabled after your confirmation.");
+});
+
+/* Auto-Detection + Auto-Deploy Loop */
+setInterval(() => {
+  if (!novaApproved) return;
+  if (novaDeploying) return;
+
+  const lastBuild = localStorage.getItem("nova_last_build");
+  const currentFlag = localStorage.getItem("nova_update_flag");
+
+  if (currentFlag && currentFlag !== lastBuild) {
+    novaDeploying = true;
+    log("Nova detected updates — launching auto-build.");
+    runNovaDeploy();
+    localStorage.setItem("nova_last_build", currentFlag);
+
+    setTimeout(() => { novaDeploying = false; }, 15000);
+  }
+
+}, 30000);
+
+/* Next-Obstacle Suggestions (simple version) */
+window.novaSuggestNext = function() {
+  const order = [
+    "Routing Stabilization",
+    "Voice Portal Skeleton",
+    "Marketplace Module",
+    "Add-Ons System",
+    "Financial Panel",
+    "Gamification Engine"
+  ];
+
+  const last = localStorage.getItem("nova_last_step") || order[0];
+  const nextIndex = (order.indexOf(last) + 1) % order.length;
+  const next = order[nextIndex];
+
+  localStorage.setItem("nova_last_step", next);
+  log(`Next recommended obstacle: ${next}`);
+
+  return next;
+};
+
