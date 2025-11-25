@@ -1,52 +1,53 @@
-/* ===== Command Bridge Button ===== */
+
+/* ===== Bridge Communications / Command Bridge button ===== */
 .command-bridge-btn {
   margin-top: 0.75rem;
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(158, 107, 255, 0.18);
-  color: #ffffff;
-  font-size: 0.9rem;
+  background: rgba(158,107,255,0.18);
+  color: white;
   cursor: pointer;
+  font-size: 0.9rem;
 }
-
 .command-bridge-btn:hover {
-  background: rgba(158, 107, 255, 0.32);
+  background: rgba(158,107,255,0.32);
 }
 
-/* ===== Command Bridge Panel ===== */
+/* ===== Command Bridge TOP PANEL (70% width, centered) ===== */
 .cb-panel {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 320px;
-  max-width: 80vw;
-  height: 100vh;
-  background: rgba(4, 6, 14, 0.98);
-  box-shadow: -0.25rem 0 1rem rgba(0, 0, 0, 0.6);
-  border-left: 1px solid rgba(255,255,255,0.15);
+  left: 50%;
+  transform: translate(-50%, -110%);
+  width: 70vw;
+  max-width: 960px;
+  height: 60vh;
+  background: rgba(4,6,14,0.98);
+  border-radius: 0 0 12px 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.3s ease-out;
   z-index: 999;
+  transition: transform 0.35s ease-out;
 }
 
 .cb-panel-visible {
-  transform: translateX(0%);
+  transform: translate(-50%, 0);
 }
 
 .cb-panel-hidden {
-  transform: translateX(100%);
+  transform: translate(-50%, -110%);
 }
 
 .cb-chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.18);
   font-size: 0.95rem;
 }
 
@@ -54,64 +55,62 @@
   border: none;
   background: transparent;
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
 }
 
-/* Messages area */
+/* Messages */
 .cb-messages {
   flex: 1;
-  padding: 0.75rem 0.75rem 0.5rem;
+  padding: 0.75rem;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   font-size: 0.85rem;
 }
 
-/* Generic message bubble */
 .cb-msg {
   max-width: 80%;
   padding: 0.4rem 0.6rem;
   border-radius: 0.65rem;
-  margin-bottom: 0.4rem;
   line-height: 1.3;
 }
 
-/* Nova on the left */
 .cb-msg-nova {
   align-self: flex-start;
-  background: rgba(158, 107, 255, 0.3);
+  background: rgba(158,107,255,0.3);
 }
 
-/* SAI on the right */
 .cb-msg-sai {
   align-self: flex-end;
   background: rgba(255,255,255,0.08);
 }
 
-/* Typing style */
 .cb-msg-typing {
-  opacity: 0.75;
+  opacity: 0.7;
   font-style: italic;
 }
 
-/* Controls row */
+/* Controls */
 .cb-controls {
-  padding: 0.5rem 0.75rem 0;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  padding: 0.5rem 0.75rem 0.25rem;
+  border-top: 1px solid rgba(255,255,255,0.14);
 }
 
 .cb-apply-btn {
   width: 100%;
-  padding: 0.4rem 0.6rem;
+  padding: 0.4rem 0.65rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(0, 180, 140, 0.25);
+  background: rgba(0,180,140,0.25);
   color: #ffffff;
   font-size: 0.85rem;
   cursor: pointer;
 }
 
 .cb-apply-btn:hover {
-  background: rgba(0, 180, 140, 0.4);
+  background: rgba(0,180,140,0.4);
 }
 
 /* Input row */
@@ -119,7 +118,7 @@
   display: flex;
   gap: 0.4rem;
   padding: 0.5rem 0.75rem 0.75rem;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  border-top: 1px solid rgba(255,255,255,0.14);
 }
 
 .cb-input-row input {
@@ -134,27 +133,27 @@
 
 .cb-input-row input:focus {
   outline: none;
-  border-color: rgba(158, 107, 255, 0.7);
+  border-color: rgba(158,107,255,0.7);
 }
 
 .cb-send-btn {
   padding: 0.35rem 0.7rem;
   border-radius: 0.4rem;
   border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(158, 107, 255, 0.45);
+  background: rgba(158,107,255,0.5);
   color: #ffffff;
   font-size: 0.85rem;
   cursor: pointer;
 }
 
 .cb-send-btn:hover {
-  background: rgba(158, 107, 255, 0.7);
+  background: rgba(158,107,255,0.8);
 }
 
-/* Stack chat panel neatly on small screens */
-@media (max-width: 600px) {
+/* Small screens */
+@media (max-width: 700px) {
   .cb-panel {
-    width: 100%;
-    max-width: 100%;
+    width: 95vw;
+    height: 70vh;
   }
 }
