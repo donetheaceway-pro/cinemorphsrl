@@ -2,197 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>NoSa CineMorph — SuperNova Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CinemorphSRL — SuperNova Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
-
 <body class="app">
-  <!-- ========= TOP BAR ========= -->
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true"></div>
-      <div class="brand-text">
-        <h1>CinemorphSRL</h1>
-        <p class="sub">SuperNova Control Deck — Samantha’s Universe</p>
+      <div class="brand-mark" aria-hidden="true">N</div>
+      <div>
+        <h1>NoSa CineMorph</h1>
+        <p class="sub">SuperNova Control Deck — Vercel Build</p>
       </div>
-    </div>
-
-    <div class="top-actions">
-      <div class="status-pill" id="systemStatus">
-        <span class="dot"></span>
-        <span class="label">System: Online</span>
-      </div>
-
-      <!-- Pink orb Nova button (AI only, NO DEPLOY) -->
-      <button id="novaButton" class="nova-button" aria-label="Activate Nova AI">
-        <span class="nova-orb"></span>
-      </button>
     </div>
   </header>
 
-  <!-- ========= MAIN LAYOUT ========= -->
   <main class="layout">
-    <!-- ===== LEFT COLUMN ===== -->
-    <section class="column column-left">
-
-      <!-- Universe Status Card -->
-      <section class="card card-status">
-        <header class="card-header">
-          <h2>Universe Status</h2>
-          <span class="chip chip-ok">Stable</span>
-        </header>
-
-        <div class="card-body">
-          <div class="status-split">
-            <!-- LEFT: STATUS VALUES -->
-            <div class="status-block">
-              <ul class="status-list">
-                <li>
-                  <span class="label">Visual Core</span>
-                  <span class="value">Online</span>
-                </li>
-                <li>
-                  <span class="label">Nova Engine</span>
-                  <span class="value">Linked</span>
-                </li>
-                <li>
-                  <span class="label">Portal Map</span>
-                  <span class="value">Synchronized</span>
-                </li>
-                <li>
-                  <span class="label">Active Task</span>
-                  <span class="value" id="activeTaskValue">None</span>
-                </li>
-              </ul>
-            </div>
-
-            <!-- RIGHT: UPCOMING TASKS -->
-            <div class="status-block status-block-upcoming">
-              <h3 class="upcoming-title">Upcoming Tasks</h3>
-              <ul class="upcoming-list">
-                <li>Build pages for each Work Environment portal.</li>
-                <li>Link Work Environment to backend services.</li>
-                <li>Prepare security layer (auth, roles, protections).</li>
-                <li>Stage new websites for deployment.</li>
-                <li>Run system checks after each update.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Nova Console (chat-style) -->
-      <section class="card card-log">
-        <header class="card-header">
-          <h2>Nova Console</h2>
-          <button id="clearLogButton" class="chip chip-clear">Clear</button>
-        </header>
-
-        <div class="card-body log-body">
-          <pre id="logOutput" class="log-output"></pre>
-        </div>
-
-        <!-- Command Bar for typed Nova commands -->
-        <footer class="command-bar">
-          <input
-            id="novaInput"
-            type="text"
-            placeholder="Type a command for Nova…"
-            autocomplete="off"
-          />
-          <button id="sendCommand" class="btn small-btn">Send</button>
-        </footer>
-      </section>
-
-      <!-- Deployment Panel (separate from Nova, log-only) -->
-      <section class="card card-deploy">
-        <header class="card-header">
-          <h2>Deployment Panel</h2>
-          <span class="chip chip-warn">Manual Control</span>
-        </header>
-        <div class="card-body deployment-grid">
-          <button class="btn deploy-btn" data-action="local-preview">
-            Local Preview
-          </button>
-          <button class="btn deploy-btn" data-action="vercel-deploy">
-            Vercel Deploy
-          </button>
-          <button class="btn deploy-btn" data-action="refresh-env">
-            Refresh Environment
-          </button>
-        </div>
-        <footer class="card-footer">
-          <p class="hint">
-            These controls are <strong>log-only</strong> — nothing auto-deploys from here.
-          </p>
-        </footer>
-      </section>
+    <section class="column portals">
+      <h2>Portals</h2>
+      <button class="portal-card" data-portal="movies">🎬 Movies</button>
+      <button class="portal-card" data-portal="games">🎮 Games</button>
+      <button class="portal-card" data-portal="voice">🎤 Voice</button>
+      <button class="portal-card" data-portal="marketplace">🛒 Marketplace</button>
     </section>
 
-    <!-- ===== RIGHT COLUMN ===== -->
-    <section class="column column-right">
-      <section class="card card-workspace">
-        <header class="card-header">
-          <h2>Work Environment</h2>
-          <span class="chip chip-ok">Online</span>
-        </header>
-
-        <div class="card-body">
-          <p class="hint">
-            Use Marketplace as your hub, and rearrange the lower portals as needed.
-          </p>
-
-          <div class="workspace-grid" id="workspaceGrid">
-            <!-- TOP: FIXED MARKETPLACE -->
-            <div class="portal-row-top">
-              <button
-                class="portal-tile portal-tile-wide"
-                data-portal="#/marketplace/"
-              >
-                <h3>Marketplace</h3>
-                <p>Hub for add-ons, bundles, and future upgrades.</p>
-              </button>
-            </div>
-
-            <!-- BOTTOM: MOVABLE PORTALS -->
-            <div class="portal-row-bottom" id="reorderRow">
-              <button
-                class="portal-tile"
-                data-portal="#/cineverse-creator/"
-                data-key="cineverse"
-                draggable="true"
-              >
-                <h3>Cineverse Creator</h3>
-                <p>Movie builder portal for cinematic universes.</p>
-              </button>
-
-              <button
-                class="portal-tile"
-                data-portal="#/game-portal/"
-                data-key="game"
-                draggable="true"
-              >
-                <h3>Game Portal</h3>
-                <p>Design, test, and launch interactive missions.</p>
-              </button>
-
-              <button
-                class="portal-tile"
-                data-portal="#/voice-simulator/"
-                data-key="voice"
-                draggable="true"
-              >
-                <h3>Voice Simulator</h3>
-                <p>Real-time voice interface and simulation engine.</p>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+    <section class="column console">
+      <div class="nova-row">
+        <button id="novaButton" class="nova-button">NoSa / Nova Button</button>
+        <span id="novaStatus" class="status-badge status-idle">Idle</span>
+      </div>
+      <div class="panel">
+        <h2>NoSa Activity Log</h2>
+        <ul id="logList" class="log"></ul>
+      </div>
     </section>
   </main>
 
-  <script src="main.js"></script>
+  <script src="/main.js"></script>
 </body>
 </html>
