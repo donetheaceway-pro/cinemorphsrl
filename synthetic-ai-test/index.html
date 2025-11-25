@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samantha’s Universe — SuperNova Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="app">
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="topbar">
+    <div class="brand">
+      <h1>Samantha’s Universe</h1>
+      <p class="sub">SuperNova Control Deck</p>
+    </div>
+  </header>
+
+  <!-- ================= MAIN LAYOUT ================= -->
+  <main class="layout">
+
+    <!-- -------- LEFT COLUMN: MAIN PORTALS -------- -->
+    <section id="portalsColumn" data-sai="layout">
+      <h2>Main Portals</h2>
+
+      <a class="portal-card" data-sai="portal">Cineverse Creator</a>
+      <a class="portal-card" data-sai="portal">Game Builder</a>
+      <a class="portal-card" data-sai="portal">Voice Studio</a>
+      <a class="portal-card" data-sai="portal">Marketplace</a>
+    </section>
+
+    <!-- -------- RIGHT COLUMN: WORK ENVIRONMENT -------- -->
+    <section id="workEnvColumn" data-sai="layout">
+      <h2>Work Environment</h2>
+
+      <div class="work-card" data-sai="work-env">Online — Vercel</div>
+      <div class="work-card" data-sai="work-env">Online — Firebase</div>
+      <div class="work-card" data-sai="work-env">Local — Dev Sandbox</div>
+    </section>
+
+  </main>
+
+  <!-- ================= SYNTHETIC AI CONTROL STRIP ================= -->
+  <section class="synthetic-ai-panel">
+    <h2>Synthetic AI — Incremental Fixes</h2>
+
+    <div class="synthetic-ai-actions">
+      <button id="saiScanBtn" type="button">Scan Layout</button>
+      <button id="saiApplyBtn" type="button">Apply Fixes</button>
+      <button id="saiQuickFixBtn" type="button">Quick Fix</button>
+    </div>
+
+    <div id="syntheticAiLog" class="synthetic-ai-log"></div>
+  </section>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="synthetic-ai-config.js"></script>
+  <script src="synthetic-ai-engine.js"></script>
+
+</body>
+</html>
 
