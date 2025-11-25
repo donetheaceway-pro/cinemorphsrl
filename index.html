@@ -2,42 +2,131 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NoSa CineMorph — SuperNova Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/styles.css" />
+  <title>Samantha’s Universe — SuperNova Control Deck</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="app">
+
+<body>
+
+  <!-- ========== TOP BAR ========== -->
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true">N</div>
-      <div>
-        <h1>NoSa CineMorph</h1>
-        <p class="sub">SuperNova Control Deck — Vercel Build</p>
-      </div>
+      <h1>Samantha’s Universe — SuperNova Dashboard</h1>
+      <p class="sub">Unified Control Deck</p>
+    </div>
+
+    <div class="top-actions">
+      <button id="novaButton" class="nova-button">NoSa / Nova</button>
     </div>
   </header>
 
+  <!-- ========== MAIN LAYOUT ========== -->
   <main class="layout">
+
+    <!-- LEFT COLUMN -->
     <section class="column portals">
       <h2>Portals</h2>
-      <button class="portal-card" data-portal="movies">🎬 Movies</button>
-      <button class="portal-card" data-portal="games">🎮 Games</button>
-      <button class="portal-card" data-portal="voice">🎤 Voice</button>
-      <button class="portal-card" data-portal="marketplace">🛒 Marketplace</button>
+
+      <button class="portal-btn">CineVerse Creator</button>
+      <button class="portal-btn">Game Builder</button>
+      <button class="portal-btn">Voice / SAI</button>
+      <button class="portal-btn">Marketplace</button>
     </section>
 
-    <section class="column console">
-      <div class="nova-row">
-        <button id="novaButton" class="nova-button">NoSa / Nova Button</button>
-        <span id="novaStatus" class="status-badge status-idle">Idle</span>
+    <!-- RIGHT COLUMN -->
+    <section class="column status">
+      <h2>System Status</h2>
+
+      <div class="status-box">
+        <p>Universe Online</p>
+        <p>Visual Core Ready</p>
+        <p>Nova Engine Idle</p>
       </div>
-      <div class="panel">
-        <h2>NoSa Activity Log</h2>
-        <ul id="logList" class="log"></ul>
+
+      <div class="status-box">
+        <p>Modules Linked</p>
+        <p>Current Task: SAI Activation</p>
+        <p>Next Task: Dashboard Expansion</p>
       </div>
     </section>
+
   </main>
 
-  <script src="/main.js"></script>
+  <!-- ========================================================= -->
+  <!-- ⭐ NOVA / NoSa CHAT PANEL — FULL SAI FRONT-END INCLUDED ⭐ -->
+  <!-- ========================================================= -->
+
+  <div id="novaChatPanel" class="nova-chat">
+    <header class="nova-chat-header">
+      <span>SuperNova — Live Console</span>
+      <button id="closeNovaChat" class="nova-chat-close">×</button>
+    </header>
+
+    <div id="novaChatMessages" class="nova-chat-messages">
+      <div class="nova-msg nova-msg-nova">
+        <p>SuperNova online inside Samantha’s Universe. How can I help?</p>
+      </div>
+    </div>
+
+    <form id="novaChatForm" class="nova-chat-input">
+      <input
+        id="novaChatText"
+        type="text"
+        placeholder="Type your message…"
+        autocomplete="off"
+      />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const novaBtn = document.getElementById("novaButton");
+      const panel = document.getElementById("novaChatPanel");
+      const closeBtn = document.getElementById("closeNovaChat");
+      const form = document.getElementById("novaChatForm");
+      const input = document.getElementById("novaChatText");
+      const messages = document.getElementById("novaChatMessages");
+
+      function openPanel() {
+        panel.classList.add("open");
+        input && input.focus();
+      }
+
+      function closePanel() {
+        panel.classList.remove("open");
+      }
+
+      novaBtn.addEventListener("click", openPanel);
+      closeBtn.addEventListener("click", closePanel);
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const text = input.value.trim();
+        if (!text) return;
+
+        // user message
+        const userMsg = document.createElement("div");
+        userMsg.className = "nova-msg nova-msg-user";
+        userMsg.innerHTML = `<p>${text}</p>`;
+        messages.appendChild(userMsg);
+
+        input.value = "";
+        messages.scrollTop = messages.scrollHeight;
+
+        // placeholder Nova reply
+        const novaMsg = document.createElement("div");
+        novaMsg.className = "nova-msg nova-msg-nova";
+        novaMsg.innerHTML = `<p>SAI placeholder response. (Live connection coming next.)</p>`;
+        messages.appendChild(novaMsg);
+
+        messages.scrollTop = messages.scrollHeight;
+      });
+    });
+  </script>
+
 </body>
 </html>
