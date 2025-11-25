@@ -1,15 +1,12 @@
-// AUTO MODE: when true, deploy runs immediately with no confirm panel
-const AUTO_CONFIRM_DEPLOY = false; // set true when you want hands-off runs
-let novaDeploying = false;
-
 /* ============================================================
-   SUPERNOVA DASHBOARD — DEPLOY ENABLED
-   - 🜁 NOVA button = real deploy
-   - Control panel buttons = status only
-   - Logs + mission state
+   SUPERNOVA DASHBOARD — CLEAN MAIN.JS
+   One-Click System™ — Auto AFTER confirmation
 ============================================================ */
 
 console.log("SuperNova Dashboard main.js loaded.");
+
+let novaApproved = false;
+let novaDeploying = false;
 
 /* ------------------------------------------------------------
    DOM
@@ -19,39 +16,62 @@ const missionText  = document.getElementById("missionText");
 const novaState    = document.getElementById("novaState");
 const novaLog      = document.getElementById("novaLog");
 
-/* ------------------------------------------------------------
-   REAL DEPLOY HOOK (Your Vercel Deploy URL)
------------------------------------------------------------- */
-const DEPLOY_HOOK = "https://api.vercel.com/v1/integrations/deploy/prj_Ah1cZl6Nd55ErrfHEWgwxX31wGl5/Ze97OaQJgI";
+const missionBanner   = document.getElementById("missionBanner");
+const deployInfoPanel = document.getElementById("deployInfoPanel");
+
+const learnMoreBtn    = document.getElementById("learnMoreBtn");
+const confirmDeployBtn = document.getElementById("confirmDeployBtn");
 
 /* ------------------------------------------------------------
-   DEPLOY FUNCTION (NOVA)
+   REAL DEPLOY URL
+------------------------------------------------------------ */
+const DEPLOY_HOOK =
+  "https://api.vercel.com/v1/integrations/deploy/prj_Ah1cZl6Nd55ErrfHEWgwxX31wGl5/Ze97OaQJgI";
+
+/* ------------------------------------------------------------
+   DEPLOY FUNCTION
 ------------------------------------------------------------ */
 async function runNovaDeploy() {
-  log("🜁 NOVA: Deployment initialized…");
+  log("🜁 Nova: Deployment started.");
   novaState.textContent = "DEPLOYING";
 
   try {
     const res = await fetch(DEPLOY_HOOK, { method: "POST" });
-    log("Nova sent deploy request to Vercel…");
 
     if (!res.ok) throw new Error("Deploy failed.");
 
-    log("Vercel accepted the deploy. Build starting.");
-    missionText.textContent = "Nova deployment triggered — system updating.";
+    log("Nova → Vercel accepted deployment.");
+    missionText.textContent = "Nova deployment triggered.";
     novaState.textContent = "WORKING";
 
   } catch (err) {
-    log("❌ Deploy Failed — check Vercel.");
+    log("❌ Deployment failed.");
     novaState.textContent = "ERROR";
   }
 }
 
 /* ------------------------------------------------------------
-   NOVA BUTTON (Dashboard)
+   BUTTON EVENTS
 ------------------------------------------------------------ */
-novaBtn.addEventListener("click", () => {
-  log("🜁 NOVA button pressed.");
+novaBtn?.addEventListener("click", () => {
+  log("🜁 Nova button pressed.");
+  runNovaDeploy();
+});
+
+missionBanner?.addEventListener("click", () => {
+  deployInfoPanel?.classList.toggle("hidden");
+  log("Deployment info panel toggled.");
+});
+
+learnMoreBtn?.addEventListener("click", () => {
+  alert("Nova deployments refresh your Universe with zero downtime and auto rollback.");
+});
+
+/* APPROVAL → enables auto-build system */
+confirmDeployBtn?.addEventListener("click", () => {
+  deployInfoPanel?.classList.add("hidden");
+  novaApproved = true;
+  log("Auto-build enabled after your approval.");
   runNovaDeploy();
 });
 
@@ -69,120 +89,39 @@ function log(msg) {
 }
 
 /* ------------------------------------------------------------
-   NEW — Deployment Panel Logic
+   AUTO-FLAGGING
 ------------------------------------------------------------ */
-
-/* Toggle deployment info panel */
-const missionBanner = document.getElementById("missionBanner");
-const deployInfoPanel = document.getElementById("deployInfoPanel");
-
-missionBanner.addEventListener("click", () => {
-  deployInfoPanel.classList.toggle("hidden");
-  log("Mission panel opened for deployment review.");
-});
-
-/* Learn More */
-document.getElementById("learnMoreBtn").addEventListener("click", () => {
-  alert("Nova deployments update your Universe codebase, recompile the UI, refresh portal routes, and rebuild the dashboard. Risks are minimal with Vercel: zero-downtime builds and automatic rollbacks.");
-});
-
-/* Confirm Deployment */
-document.getElementById("confirmDeployBtn").addEventListener("click", () => {
-  log("🜁 Confirmed — launching Nova deployment.");
-  deployInfoPanel.classList.add("hidden");
-  runNovaDeploy();
-});
-
-/* ============================================================
-   SUPERNOVA — AUTO BUILD AFTER CONFIRMATION
-   Mode B: Auto ONLY after you approve once.
-============================================================ */
-
-let novaApproved = false;      // you approve once → auto mode starts
-let novaDeploying = false;     // prevents double-deploys
-const AUTO_CONFIRM_DEPLOY = true; // Mode B active
-
-/* When you press "Confirm Deployment" */
-document.getElementById("confirmDeployBtn")?.addEventListener("click", () => {
-  novaApproved = true;
-  log("Nova auto-build enabled (after your approval).");
-});
-
-/* Nova Change Detector — checks every 30s */
-setInterval(() => {
-  if (!AUTO_CONFIRM_DEPLOY) return;       // safety: mode can be turned off
-  if (!novaApproved) return;              // waits for your approval
-  if (novaDeploying) return;              // prevents overlap
-
-  // Basic change check — fast + safe
-  const lastBuild = localStorage.getItem("nova_last_build");
-  const currentFlag = localStorage.getItem("nova_update_flag");
-
-  if (currentFlag && currentFlag !== lastBuild) {
-    novaDeploying = true;
-    log("Change detected — Nova auto-deploy starting.");
-    runNovaDeploy();
-    localStorage.setItem("nova_last_build", currentFlag);
-
-    setTimeout(() => { novaDeploying = false; }, 15000);
-  }
-
-}, 30000); // every 30 seconds
-
-/* ============================================================
-   SUPERNOVA — FULL AUTOMATION UPGRADE
-   Mode B: Auto AFTER your confirmation
-   Includes:
-   - Auto-Flagging
-   - Auto-Detection
-   - Auto-Build Queue
-   - Next-Obstacle Suggestions
-============================================================ */
-
-/* GLOBAL STATE */
-let novaApproved = false;
-let novaDeploying = false;
-
-/* Detect changes via Nova-generated flags */
-function novaFlagChange() {
-  localStorage.setItem("nova_update_flag", Date.now());
-  log("Nova flagged a new update.");
-}
-
-/* Auto-Flagging: whenever Nova prepares code (triggered by your requests) */
-window.novaPrepareBuild = function(taskName = "Unnamed Task") {
+window.novaPrepareBuild = function (taskName = "Unnamed Task") {
   log(`Nova prepared: ${taskName}`);
-  novaFlagChange();
+  localStorage.setItem("nova_update_flag", Date.now());
 };
 
-/* Listen for your confirm button */
-document.getElementById("confirmDeployBtn")?.addEventListener("click", () => {
-  novaApproved = true;
-  log("Auto-build enabled after your confirmation.");
-});
-
-/* Auto-Detection + Auto-Deploy Loop */
+/* ------------------------------------------------------------
+   AUTO-DETECT + AUTO-DEPLOY LOOP
+   Runs ONLY after your confirmation
+------------------------------------------------------------ */
 setInterval(() => {
   if (!novaApproved) return;
   if (novaDeploying) return;
 
-  const lastBuild = localStorage.getItem("nova_last_build");
-  const currentFlag = localStorage.getItem("nova_update_flag");
+  const last = localStorage.getItem("nova_last_build");
+  const flag = localStorage.getItem("nova_update_flag");
 
-  if (currentFlag && currentFlag !== lastBuild) {
+  if (flag && flag !== last) {
     novaDeploying = true;
-    log("Nova detected updates — launching auto-build.");
+    log("Nova detected updates → auto-deploying.");
     runNovaDeploy();
-    localStorage.setItem("nova_last_build", currentFlag);
+    localStorage.setItem("nova_last_build", flag);
 
-    setTimeout(() => { novaDeploying = false; }, 15000);
+    setTimeout(() => (novaDeploying = false), 15000);
   }
-
 }, 30000);
 
-/* Next-Obstacle Suggestions (simple version) */
-window.novaSuggestNext = function() {
-  const order = [
+/* ------------------------------------------------------------
+   NEXT OBSTACLE SUGGESTION
+------------------------------------------------------------ */
+window.novaSuggestNext = function () {
+  const list = [
     "Routing Stabilization",
     "Voice Portal Skeleton",
     "Marketplace Module",
@@ -191,13 +130,12 @@ window.novaSuggestNext = function() {
     "Gamification Engine"
   ];
 
-  const last = localStorage.getItem("nova_last_step") || order[0];
-  const nextIndex = (order.indexOf(last) + 1) % order.length;
-  const next = order[nextIndex];
+  const last = localStorage.getItem("nova_last_step") || list[0];
+  const idx = (list.indexOf(last) + 1) % list.length;
+  const next = list[idx];
 
   localStorage.setItem("nova_last_step", next);
   log(`Next recommended obstacle: ${next}`);
 
   return next;
 };
-
