@@ -16,12 +16,14 @@
         <p class="sub">SuperNova Control Deck — Jet Black + Gold Edition</p>
       </div>
     </div>
-   <div class="top-actions">
-  <button id="novaGlobalBtn" class="nova-btn nova-cosmic" title="🜁 NOVA">
-    <span class="nova-glyph">🜁</span>
-    <span class="nova-text">NOVA</span>
-  </button>
-</div>
+
+    <!-- 🜁 NOVA BUTTON (DASHBOARD VERSION — FULL TEXT) -->
+    <div class="top-actions">
+      <button id="novaGlobalBtn" class="nova-btn nova-cosmic" title="🜁 NOVA">
+        <span class="nova-glyph">🜁</span>
+        <span class="nova-text">NOVA</span>
+      </button>
+    </div>
   </header>
 
   <main class="wrap">
@@ -34,7 +36,7 @@
 
         <div id="missionBanner" class="blink-banner">
           <span class="blink-dot"></span>
-          <span id="missionText">"Cineverse Portal UI expansion" is ready to deploy.</span>
+          <span id="missionText">"System standing by for Nova deployment."</span>
         </div>
       </div>
 
@@ -56,43 +58,18 @@
       </div>
     </section>
 
-    <!-- Portals -->
-    <section class="section">
-      <div class="section-head">
-        <h3>Portals</h3>
-      </div>
-
-      <div class="portal-grid">
-        <a class="portal-card gold" href="/cineverse-creator/index.html">
-          <div class="portal-icon">🎬</div>
-          <div class="portal-meta">
-            <h4>Cineverse Movie Portal</h4>
-          </div>
-          <div class="portal-cta">Open</div>
-        </a>
-
-        <a class="portal-card" href="/game-portal/index.html">
-          <div class="portal-icon">🎮</div>
-          <div class="portal-meta">
-            <h4>Game Portal</h4>
-          </div>
-          <div class="portal-cta">Open</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- DEPLOY CONTROL PANEL -->
+    <!-- Control Panel -->
     <section class="panel deploy-panel">
       <div class="panel-head">
         <h3>Deployment Control Panel</h3>
-        <p class="muted">Direct deploy commands for each portal.</p>
+        <p class="muted">Central command for Nova deployment.</p>
       </div>
 
       <div class="deploy-grid">
-        <button id="deployCineBtn"  class="deploy-btn cine">Deploy Cineverse</button>
-        <button id="deployGameBtn"  class="deploy-btn game">Deploy Game</button>
-        <button id="deployVoiceBtn" class="deploy-btn voice">Deploy Voice</button>
-        <button id="deployAllBtn"   class="deploy-btn all">Deploy All</button>
+        <button id="deployCineBtn"  class="deploy-btn cine">Status Only</button>
+        <button id="deployGameBtn"  class="deploy-btn game">Status Only</button>
+        <button id="deployVoiceBtn" class="deploy-btn voice">Status Only</button>
+        <button id="deployAllBtn"   class="deploy-btn all">Status Only</button>
       </div>
     </section>
 
@@ -101,9 +78,9 @@
       <div class="section-head">
         <h3>Nova Log</h3>
       </div>
-
       <div id="novaLog" class="log"></div>
     </section>
+
   </main>
 
   <footer class="footer">
