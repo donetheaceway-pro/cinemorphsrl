@@ -10,7 +10,7 @@
 <body class="app">
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-mark"></div>
       <div>
         <h1>CinemorphSRL</h1>
         <p class="sub">SuperNova Control Deck — Jet Black + Gold Edition</p>
@@ -18,22 +18,23 @@
     </div>
 
     <div class="top-actions">
-      <button id="novaButton" class="nova-button" aria-label="Nova Button">
-        <span class="nova-orb"></span>
-        <span class="nova-label">NOVA</span>
+      <button id="deployNowTop" class="btn btn-gold">
+        🚀 Deploy Cineverse
       </button>
     </div>
   </header>
 
   <main class="wrap">
+
+    <!-- Mission Banner -->
     <section class="hero card">
       <div class="hero-left">
         <h2 class="hero-title">Mission Status</h2>
-        <p class="hero-sub">Everything routed and deploy ready. You control the pace.</p>
+        <p class="hero-sub">Your portals are wired and deploy ready.</p>
 
-        <div id="blinkBanner" class="blink-banner hidden" role="status">
+        <div id="missionBanner" class="blink-banner">
           <span class="blink-dot"></span>
-          <span id="blinkText"></span>
+          <span id="missionText">"Cineverse Portal UI expansion" is ready to deploy.</span>
         </div>
       </div>
 
@@ -55,10 +56,10 @@
       </div>
     </section>
 
+    <!-- Portals -->
     <section class="section">
       <div class="section-head">
         <h3>Portals</h3>
-        <p>Jump between portals instantly.</p>
       </div>
 
       <div class="portal-grid">
@@ -66,7 +67,6 @@
           <div class="portal-icon">🎬</div>
           <div class="portal-meta">
             <h4>Cineverse Movie Portal</h4>
-            <p>Create, preview, and publish drops.</p>
           </div>
           <div class="portal-cta">Open</div>
         </a>
@@ -75,53 +75,34 @@
           <div class="portal-icon">🎮</div>
           <div class="portal-meta">
             <h4>Game Portal</h4>
-            <p>Builder, launches, and play tests.</p>
           </div>
           <div class="portal-cta">Open</div>
         </a>
       </div>
     </section>
 
-<section class="panel deploy-panel">
-  <div class="panel-head">
-    <h3>Deployment Control Panel</h3>
-    <p class="muted">Dashboard-only deploy buttons for each portal.</p>
-  </div>
-
-  <div class="deploy-grid">
-    <button id="deployCineBtn"  class="deploy-btn cine">Deploy Cineverse</button>
-    <button id="deployGameBtn"  class="deploy-btn game">Deploy Game</button>
-    <button id="deployVoiceBtn" class="deploy-btn voice">Deploy Voice</button>
-    <button id="deployAllBtn"   class="deploy-btn all">Deploy All</button>
-  </div>
-</section>
-    
-    <section class="section">
-      <div class="section-head">
-        <h3>Nova Deploy Pipeline</h3>
-        <p>One clean path. When an obstacle completes, you’ll get a blinking banner, then choose “Deploy Now.”</p>
+    <!-- DEPLOY CONTROL PANEL -->
+    <section class="panel deploy-panel">
+      <div class="panel-head">
+        <h3>Deployment Control Panel</h3>
+        <p class="muted">Direct deploy commands for each portal.</p>
       </div>
 
-      <div id="pipeline" class="pipeline"></div>
-
-      <div class="pipeline-actions">
-        <button id="deployNow" class="btn btn-gold">Deploy Now</button>
-        <button id="autopilotToggle" class="btn btn-ghost" aria-pressed="false">Autopilot: OFF</button>
+      <div class="deploy-grid">
+        <button id="deployCineBtn"  class="deploy-btn cine">Deploy Cineverse</button>
+        <button id="deployGameBtn"  class="deploy-btn game">Deploy Game</button>
+        <button id="deployVoiceBtn" class="deploy-btn voice">Deploy Voice</button>
+        <button id="deployAllBtn"   class="deploy-btn all">Deploy All</button>
       </div>
-
-      <p class="tiny-note">
-        Note: This dashboard can’t redeploy Vercel directly (static site). “Deploy Now” marks the next obstacle deploy ready and
-        shows you what to commit. Any GitHub commit triggers Vercel auto-deploy.
-      </p>
     </section>
 
+    <!-- LOG -->
     <section class="section">
       <div class="section-head">
         <h3>Nova Log</h3>
-        <p>What’s done, what’s working, what’s next.</p>
       </div>
 
-      <div id="log" class="log"></div>
+      <div id="novaLog" class="log"></div>
     </section>
   </main>
 
