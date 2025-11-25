@@ -63,3 +63,26 @@ function log(msg) {
   `;
   novaLog.prepend(row);
 }
+
+/* Toggle deployment info panel */
+const missionBanner = document.getElementById("missionBanner");
+const deployInfoPanel = document.getElementById("deployInfoPanel");
+
+missionBanner.addEventListener("click", () => {
+  deployInfoPanel.classList.toggle("hidden");
+  log("Mission panel opened for deployment review.");
+});
+
+/* Learn More */
+document.getElementById("learnMoreBtn").addEventListener("click", () => {
+  alert("Nova deployments update your Universe codebase, recompile the UI, refresh portal routes, and rebuild the dashboard. Risks are minimal with Vercel: zero-downtime builds and automatic rollbacks.");
+});
+
+/* Confirm Deployment */
+document.getElementById("confirmDeployBtn").addEventListener("click", () => {
+  log("🜁 Confirmed — launching Nova deployment.");
+  deployInfoPanel.classList.add("hidden");
+  runNovaDeploy();
+});
+
+
