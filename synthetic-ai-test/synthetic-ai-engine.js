@@ -1,13 +1,11 @@
-// Synthetic AI Engine — Layout Micro-Fixes + Command Bridge Chat System
+// Bridge Communications Engine — Layout Micro-Fixes + Command Bridge Chat
 (function () {
   const config = window.SYNTHETIC_AI_CONFIG;
   if (!config) return;
 
   const ui = config.ui || {};
 
-  /* -----------------------------------------------------------
-     BASIC LOGGING TO SAI PANEL
-  ----------------------------------------------------------- */
+  // ---------- Basic log to Bridge Communications log box ----------
   function log(msg) {
     console.log(msg);
     const el = document.getElementById(ui.logElementId);
@@ -19,10 +17,7 @@
     }
   }
 
-  /* -----------------------------------------------------------
-     MICRO FIX RULES (Matches Your Original File)
-  ----------------------------------------------------------- */
-
+  // ---------- Layout micro-fix rules ----------
   function normalizePortal() {
     const cards = [...document.querySelectorAll("[data-sai='portal']")];
     if (!cards.length) return null;
@@ -81,12 +76,10 @@
     scan() {
       log("Scan requested.");
       const fixes = collectFixes();
-
       if (!fixes.length) {
         log("No layout micro-fixes needed.");
         return [];
       }
-
       fixes.forEach((f) => log("Found: " + f.label));
       return fixes;
     },
@@ -96,11 +89,9 @@
         log("Blocked: not in incremental-only mode.");
         return;
       }
-
       const fixes = this.scan();
       if (!fixes.length) return;
-
-      log("Applying layout micro-fixes...");
+      log("Applying layout micro-fixes…");
       fixes.forEach((f) => f.apply());
       log("Done.");
     },
@@ -108,24 +99,18 @@
 
   window.SyntheticAI = SAI;
 
-  /* -----------------------------------------------------------
-     COMMAND BRIDGE CHAT SYSTEM
-  ----------------------------------------------------------- */
-
-  const MIN_DELAY = 3000; // 3 seconds
+  // ---------- Command Bridge Chat (Nova ↔ SAI) ----------
+  const MIN_DELAY = 3000;
   const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
   function addChat(sender, text, typing = false) {
     const box = document.getElementById("cbMessages");
-    if (!box) return;
-
+    if (!box) return null;
     const msg = document.createElement("div");
     msg.classList.add("cb-msg");
-
     if (sender === "nova") msg.classList.add("cb-msg-nova");
     if (sender === "sai") msg.classList.add("cb-msg-sai");
     if (typing) msg.classList.add("cb-msg-typing");
-
     msg.textContent = text;
     box.appendChild(msg);
     box.scrollTop = box.scrollHeight;
@@ -144,67 +129,52 @@
     addChat("sai", text);
   }
 
-  async function bridgeGreetingIfEmpty() {
+  async function greetBridgeIfEmpty() {
     const box = document.getElementById("cbMessages");
     if (!box || box.childElementCount > 0) return;
-
     await novaSays("Hi Sam, Command Bridge is online.");
-    await saiSays("SAI here — ready for layout micro-fix tasks.");
+    await saiSays("SAI here — ready to support Bridge Communications layout micro-fixes.");
   }
 
   async function handleBridgeInput(text) {
     if (!text || !text.trim()) return;
+    const cleaned = text.trim();
+    addChat("nova", cleaned);
 
-    text = text.trim();
-    addChat("nova", text);
-
+    const lower = cleaned.toLowerCase();
     let reply = "Acknowledged. I am ready when you approve fixes.";
 
-    const lower = text.toLowerCase();
-
     if (lower.includes("scan")) {
-      reply = "Use the scan or quick fix buttons — I will prepare results.";
-    }
-
-    if (lower.includes("fix")) {
+      reply = "Use the layout scan or quick fix buttons — I will prepare results.";
+    } else if (lower.includes("fix")) {
       reply = "I can apply micro-fixes when you click the approval button.";
-    }
-
-    if (lower.includes("nova")) {
-      reply = "Nova is your strategic intelligence. I execute micro-fix tasks safely.";
-    }
-
-    if (lower.includes("hi") || lower.includes("hello")) {
+    } else if (lower.includes("nova")) {
+      reply = "Nova is your strategic intelligence. I execute safe, incremental micro-fix tasks.";
+    } else if (lower.includes("hello") || lower.includes("hi")) {
       reply = "Hello Sam — SAI is active on the Command Bridge.";
     }
 
     await saiSays(reply);
   }
 
-  function openCommandBridge() {
+  function openBridgePanel() {
     const panel = document.getElementById("commandBridgePanel");
     if (!panel) return;
-
-    panel.classList.add("cb-panel-visible");
     panel.classList.remove("cb-panel-hidden");
-
-    bridgeGreetingIfEmpty();
+    panel.classList.add("cb-panel-visible");
+    greetBridgeIfEmpty();
   }
 
-  function closeCommandBridge() {
+  function closeBridgePanel() {
     const panel = document.getElementById("commandBridgePanel");
     if (!panel) return;
-
     panel.classList.remove("cb-panel-visible");
     panel.classList.add("cb-panel-hidden");
   }
 
-  /* -----------------------------------------------------------
-     DOM BINDINGS
-  ----------------------------------------------------------- */
-
+  // ---------- DOM Bindings ----------
   document.addEventListener("DOMContentLoaded", () => {
-    // SAI Buttons
+    // Bridge Communications buttons
     const scanBtn = document.getElementById(ui.scanButtonId);
     const applyBtn = document.getElementById(ui.applyButtonId);
     const quickBtn = document.getElementById(ui.quickFixButtonId);
@@ -213,43 +183,41 @@
     if (applyBtn) applyBtn.onclick = () => SAI.applyAll();
     if (quickBtn) quickBtn.onclick = () => SAI.applyAll();
 
-    // Command Bridge elements
+    log("Bridge Communications engine ready.");
+
+    // Command Bridge controls
     const toggle = document.getElementById("commandBridgeToggle");
     const closeBtn = document.getElementById("cbClose");
     const sendBtn = document.getElementById("cbSend");
     const input = document.getElementById("cbInput");
     const applyFixBtn = document.getElementById("cbApplyFixes");
 
-    if (toggle) toggle.onclick = openCommandBridge;
-    if (closeBtn) closeBtn.onclick = closeCommandBridge;
+    if (toggle) toggle.onclick = openBridgePanel;
+    if (closeBtn) closeBtn.onclick = closeBridgePanel;
 
-    if (sendBtn) {
-      sendBtn.onclick = () => {
-        const v = input.value;
-        input.value = "";
-        handleBridgeInput(v);
-      };
+    function sendFromInput() {
+      if (!input) return;
+      const value = input.value;
+      input.value = "";
+      handleBridgeInput(value);
     }
 
+    if (sendBtn) sendBtn.onclick = sendFromInput;
     if (input) {
-      input.onkeydown = (e) => {
+      input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          const v = input.value;
-          input.value = "";
-          handleBridgeInput(v);
+          sendFromInput();
         }
-      };
+      });
     }
 
     if (applyFixBtn) {
       applyFixBtn.onclick = async () => {
-        await novaSays("Nova: Sending request to SAI to apply micro-fixes.");
-        await saiSays("SAI: Executing micro-fixes now.");
+        await novaSays("Nova: Requesting SAI to apply layout micro-fixes.");
+        await saiSays("SAI: Applying micro-fixes now within incremental-only safety mode.");
         SAI.applyAll();
       };
     }
-
-    log("Synthetic AI + Command Bridge ready.");
   });
 })();
