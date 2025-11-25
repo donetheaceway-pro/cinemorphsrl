@@ -366,3 +366,46 @@ a{color:inherit;text-decoration:none}
   box-shadow: 0 0 22px rgba(197,123,255,0.7);
 }
 
+/* Oasis Work Environment Card */
+.oasis-panel {
+  margin-top: 22px;
+}
+
+.oasis-card {
+  width: 100%;
+  height: 260px;
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+  background-image: url("oasis.jpg");
+  position: relative;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 28px rgba(0,0,0,0.55);
+  transition: all .25s ease;
+  overflow: hidden;
+}
+
+.oasis-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 32px rgba(197,123,255,0.35);
+}
+
+.oasis-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 14px 0;
+  text-align: center;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: .14em;
+  background: linear-gradient(0deg, rgba(0,0,0,0.75), transparent);
+  color: #fff;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.oasis-card:hover .oasis-overlay {
+  opacity: 1;
+}
