@@ -24,7 +24,7 @@ const novaLog        = document.getElementById("novaLog");
 const novaState      = document.getElementById("novaState");
 
 /* ------------------------------------------------------------
-   LIVE DEPLOY FUNCTION — Calls /api/deploy (POST)
+   DEPLOY FUNCTION — CALLS /api/deploy (POST)
 ------------------------------------------------------------ */
 async function triggerDeploy(siteName) {
   try {
@@ -33,27 +33,30 @@ async function triggerDeploy(siteName) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: `Nova Deploy Triggered: ${siteName}`,
-        files: [] // leave empty (we aren't auto-committing updates yet)
+        files: [],          // We are not auto-committing files yet
+        site: siteName      // optional, but good for logging
       })
     });
 
     const json = await res.json();
 
-    if (!json.ok) {
-      throw new Error(json.error || "Deploy error");
+    if (!res.ok || !json.ok) {
+      throw new Error(json.error || "Unknown deploy error");
     }
 
-    log(`Deploy triggered → ${siteName}`);
+    log(`Deploy triggered for: ${siteName.toUpperCase()}`);
+
     alert(
-      `🚀 Deployment Triggered\n\n` +
-      `Module: ${siteName}\n` +
-      `Status: ${json.note || "Triggered"}\n\n` +
-      `Vercel is rebuilding in the background.`
+      `Nova Deploy Started\n\n` +
+      `Module: ${siteName.toUpperCase()}\n` +
+      `Message: ${json.message || "Triggered"}\n\n` +
+      `Vercel is now deploying in the background.`
     );
 
   } catch (err) {
-    log(`Deploy FAILED → ${siteName}`);
-    alert(`❌ Deploy failed for ${siteName}\n\n${err}`);
+    console.error(err);
+    log(`Deploy FAILED for ${siteName.toUpperCase()}`);
+    alert(`Deploy FAILED for ${siteName.toUpperCase()}`);
   }
 }
 
