@@ -1,14 +1,13 @@
 /* ============================================================
-   SAMANTHA'S SUPERNOVA DASHBOARD — FULL WORKING DEPLOY SYSTEM
-   This file controls:
-   - Motion toggle
-   - Pipeline state
-   - Mission status blinking bar
-   - Deploy buttons (Cine, Game, Voice, All)
-   - API calls to /api/deploy
+   SAMANTHA'S SUPERNOVA DASHBOARD — LIVE DEPLOY SYSTEM
+   This file now correctly:
+   - Handles POST deploy triggers
+   - Sends JSON to /api/deploy
+   - Logs deploy events
+   - Wires Cine/Game/Voice/All buttons
    ============================================================ */
 
-console.log("Nova main.js loaded.");
+console.log("Nova main.js loaded (live POST deploy enabled).");
 
 /* ------------------------------------------------------------
    DOM REFERENCES
@@ -18,54 +17,59 @@ const deployGameBtn  = document.getElementById("deployGameBtn");
 const deployVoiceBtn = document.getElementById("deployVoiceBtn");
 const deployAllBtn   = document.getElementById("deployAllBtn");
 const deployNowTop   = document.getElementById("deployNowTop");
+
 const missionText    = document.getElementById("missionText");
 const missionBanner  = document.getElementById("missionBanner");
 const novaLog        = document.getElementById("novaLog");
 const novaState      = document.getElementById("novaState");
 
 /* ------------------------------------------------------------
-   DEPLOY FUNCTION — CALLS /api/deploy?site=x
+   LIVE DEPLOY FUNCTION — Calls /api/deploy (POST)
 ------------------------------------------------------------ */
-async function triggerDeploy(site) {
+async function triggerDeploy(siteName) {
   try {
-    const res = await fetch(`/api/deploy?site=${site}`);
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    const res = await fetch("/api/deploy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: `Nova Deploy Triggered: ${siteName}`,
+        files: [] // leave empty (we aren't auto-committing updates yet)
+      })
+    });
 
     const json = await res.json();
 
-    log(`Deploy triggered for: ${site.toUpperCase()}`);
+    if (!json.ok) {
+      throw new Error(json.error || "Deploy error");
+    }
+
+    log(`Deploy triggered → ${siteName}`);
     alert(
-      `Deploy Started\n\n` +
-      `Module: ${site.toUpperCase()}\n` +
-      `Message: ${json.message || "Triggered"}\n` +
-      `Vercel will run the deploy in the background.`
+      `🚀 Deployment Triggered\n\n` +
+      `Module: ${siteName}\n` +
+      `Status: ${json.note || "Triggered"}\n\n` +
+      `Vercel is rebuilding in the background.`
     );
 
   } catch (err) {
-    console.error(err);
-    alert(`Deploy Failed for ${site.toUpperCase()}`);
-    log(`Deploy FAILED for ${site.toUpperCase()}`);
+    log(`Deploy FAILED → ${siteName}`);
+    alert(`❌ Deploy failed for ${siteName}\n\n${err}`);
   }
 }
 
 /* ------------------------------------------------------------
-   BUTTON EVENT WIRING
+   WIRE BUTTONS
 ------------------------------------------------------------ */
 function wireButtons() {
-  if (wireButtons.done) return; 
+  if (wireButtons.done) return;
   wireButtons.done = true;
 
-  deployCineBtn?.addEventListener("click", () => triggerDeploy("cine"));
-  deployGameBtn?.addEventListener("click", () => triggerDeploy("game"));
-  deployVoiceBtn?.addEventListener("click", () => triggerDeploy("voice"));
-  deployAllBtn?.addEventListener("click", () => triggerDeploy("all"));
+  deployCineBtn?.addEventListener("click", () => triggerDeploy("Cineverse Portal"));
+  deployGameBtn?.addEventListener("click", () => triggerDeploy("Game Portal"));
+  deployVoiceBtn?.addEventListener("click", () => triggerDeploy("Voice Portal"));
+  deployAllBtn?.addEventListener("click", () => triggerDeploy("All Portals"));
 
-  deployNowTop?.addEventListener("click", () => {
-    triggerDeploy("cine");  
-  });
+  deployNowTop?.addEventListener("click", () => triggerDeploy("Cineverse Portal"));
 }
 
 wireButtons();
@@ -95,5 +99,4 @@ function updateMission() {
 
 updateMission();
 
-console.log("Nova main.js successfully wired.");
-
+console.log("Nova main.js fully wired and ready.");
