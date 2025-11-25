@@ -1,111 +1,65 @@
 /* ============================================================
-   SAMANTHA'S SUPERNOVA DASHBOARD — LIVE DEPLOY SYSTEM
-   Clean, functional version:
-   - POST deploy calls to /api/deploy
-   - Proper button wiring
-   - Logs deploy actions
-   - No duplicate logic
+   SUPERNOVA DASHBOARD — DEPLOY ENABLED
+   - 🜁 NOVA button = real deploy
+   - Control panel buttons = status only
+   - Logs + mission state
 ============================================================ */
 
-console.log("Nova main.js loaded (POST deploy active).");
+console.log("SuperNova Dashboard main.js loaded.");
 
 /* ------------------------------------------------------------
-   DOM REFERENCES
+   DOM
 ------------------------------------------------------------ */
-const deployCineBtn  = document.getElementById("deployCineBtn");
-const deployGameBtn  = document.getElementById("deployGameBtn");
-const deployVoiceBtn = document.getElementById("deployVoiceBtn");
-const deployAllBtn   = document.getElementById("deployAllBtn");
-
-const deployNowTop   = document.getElementById("deployNowTop");
-
-const missionText    = document.getElementById("missionText");
-const missionBanner  = document.getElementById("missionBanner");
-const novaLog        = document.getElementById("novaLog");
-const novaState      = document.getElementById("novaState");
-
+const novaBtn      = document.getElementById("novaGlobalBtn");
+const missionText  = document.getElementById("missionText");
+const novaState    = document.getElementById("novaState");
+const novaLog      = document.getElementById("novaLog");
 
 /* ------------------------------------------------------------
-   DEPLOY FUNCTION — POST request to /api/deploy
+   REAL DEPLOY HOOK (Your Vercel Deploy URL)
 ------------------------------------------------------------ */
-async function triggerDeploy(name) {
+const DEPLOY_HOOK = "https://api.vercel.com/v1/integrations/deploy/prj_Ah1cZl6Nd55ErrfHEWgwxX31wGl5/Ze97OaQJgI";
+
+/* ------------------------------------------------------------
+   DEPLOY FUNCTION (NOVA)
+------------------------------------------------------------ */
+async function runNovaDeploy() {
+  log("🜁 NOVA: Deployment initialized…");
+  novaState.textContent = "DEPLOYING";
+
   try {
-    const res = await fetch("/api/deploy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: `Nova Deploy Triggered: ${name}`,
-        files: [],      // no auto commits yet
-        site: name
-      })
-    });
+    const res = await fetch(DEPLOY_HOOK, { method: "POST" });
+    log("Nova sent deploy request to Vercel…");
 
-    const json = await res.json();
+    if (!res.ok) throw new Error("Deploy failed.");
 
-    if (!res.ok || !json.ok) {
-      throw new Error(json.error || "Deploy error");
-    }
-
-    log(`Deploy triggered for: ${name.toUpperCase()}`);
-
-    alert(
-      `Nova Deploy Started\n\n` +
-      `Module: ${name.toUpperCase()}\n` +
-      `Message: ${json.message || "Triggered"}\n\n` +
-      `Vercel is now deploying in the background.`
-    );
+    log("Vercel accepted the deploy. Build starting.");
+    missionText.textContent = "Nova deployment triggered — system updating.";
+    novaState.textContent = "WORKING";
 
   } catch (err) {
-    console.error(err);
-    log(`Deploy FAILED for ${name.toUpperCase()}`);
-    alert(`Deploy FAILED for ${name.toUpperCase()}`);
+    log("❌ Deploy Failed — check Vercel.");
+    novaState.textContent = "ERROR";
   }
 }
 
+/* ------------------------------------------------------------
+   NOVA BUTTON (Dashboard)
+------------------------------------------------------------ */
+novaBtn.addEventListener("click", () => {
+  log("🜁 NOVA button pressed.");
+  runNovaDeploy();
+});
 
 /* ------------------------------------------------------------
-   BUTTON WIRING
+   LOG FUNCTION
 ------------------------------------------------------------ */
-function wireButtons() {
-  if (wireButtons.done) return;
-  wireButtons.done = true;
-
-  deployCineBtn?.addEventListener("click", () => triggerDeploy("cine"));
-  deployGameBtn?.addEventListener("click", () => triggerDeploy("game"));
-  deployVoiceBtn?.addEventListener("click", () => triggerDeploy("voice"));
-  deployAllBtn?.addEventListener("click", () => triggerDeploy("all"));
-
-  // Top banner deploy button
-  deployNowTop?.addEventListener("click", () => triggerDeploy("cine"));
-}
-
-wireButtons();
-
-
-/* ------------------------------------------------------------
-   LOGGING (Dashboard panel)
------------------------------------------------------------- */
-function log(text) {
-  const time = new Date().toLocaleString();
+function log(msg) {
   const row = document.createElement("div");
   row.className = "log-item";
   row.innerHTML = `
-    <div>${text}</div>
-    <div class="log-time">${time}</div>
+    <div>${msg}</div>
+    <div class="log-time">${new Date().toLocaleTimeString()}</div>
   `;
   novaLog.prepend(row);
 }
-
-
-/* ------------------------------------------------------------
-   MISSION STATUS DISPLAY
------------------------------------------------------------- */
-function updateMission() {
-  missionText.textContent = `"Cineverse Portal UI expansion" is ready to deploy.`;
-  missionBanner.classList.add("blink-ready");
-  novaState.textContent = "WORKING";
-}
-
-updateMission();
-
-console.log("Nova main.js is fully online.");
