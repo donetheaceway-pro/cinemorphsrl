@@ -131,7 +131,6 @@ body.app {
   box-shadow: 0 0 10px #7fffb7;
 }
 
-/* Offline or listening overrides */
 .status-pill.listening {
   background: rgba(92, 68, 14, 0.7);
   border-color: rgba(249, 200, 91, 0.9);
@@ -144,71 +143,43 @@ body.app {
   color: #ffd5dd;
 }
 
-/* =============== NOVA BUTTON (GLYPH) =============== */
+/* =============== NOVA BUTTON (PINK ORB) =============== */
 .nova-button {
   position: relative;
   border: none;
   padding: 0;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   cursor: pointer;
   background: transparent;
-  overflow: visible;
 }
 
-.nova-button-glow {
-  position: absolute;
-  inset: -40%;
-  background:
-    radial-gradient(circle at 15% 0, rgba(249, 200, 91, 0.55), transparent 60%),
-    radial-gradient(circle at 80% 100%, rgba(128, 90, 255, 0.45), transparent 60%);
-  opacity: 0.9;
-  filter: blur(14px);
-  pointer-events: none;
-  transition: opacity 0.2s ease-out;
-}
-
-.nova-button-shell {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 0 0, #191320, #05040b);
-  box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.22);
-  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out,
-    background 0.15s ease-out;
-}
-
-.nova-glyph {
+.nova-orb {
   display: block;
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, #ffe5f7, #f472b6, #9f1239);
+  box-shadow:
+    0 0 16px rgba(244, 114, 182, 0.8),
+    0 0 40px rgba(236, 72, 153, 0.6);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
-.nova-button:hover .nova-button-shell {
+.nova-button:hover .nova-orb {
   transform: translateY(-1px);
   box-shadow:
-    0 18px 50px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(255, 255, 255, 0.32);
-  background: radial-gradient(circle at 0 0, #23162b, #06040f);
+    0 0 22px rgba(244, 114, 182, 0.95),
+    0 0 60px rgba(236, 72, 153, 0.8);
 }
 
-.nova-button:active .nova-button-shell {
-  transform: translateY(1px) scale(0.98);
+.nova-button:active .nova-orb,
+.nova-button.active .nova-orb {
+  transform: translateY(1px) scale(0.96);
   box-shadow:
-    0 8px 26px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(255, 255, 255, 0.4);
-}
-
-.nova-button.active .nova-button-shell {
-  box-shadow:
-    0 0 26px rgba(249, 200, 91, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.45);
+    0 0 16px rgba(244, 114, 182, 0.9),
+    0 0 40px rgba(236, 72, 153, 0.7);
 }
 
 /* =============== LAYOUT =============== */
@@ -418,13 +389,16 @@ body.app {
 
 .log-output {
   margin: 0;
+  white-space: pre-wrap;      /* wrap like a chat */
+  word-wrap: break-word;      /* break long lines */
+  overflow-x: hidden;         /* no sideways scroll */
+  overflow-y: auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   font-size: 0.72rem;
   line-height: 1.4;
   color: #d6e2ff;
   max-height: 210px;
-  overflow-y: auto;
 }
 
 /* Command bar */
