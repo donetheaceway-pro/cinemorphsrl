@@ -37,11 +37,12 @@
     <section class="column column-left">
 
       <!-- Universe Status Card -->
-      <section class="card">
+      <section class="card card-status">
         <header class="card-header">
           <h2>Universe Status</h2>
-          <span class="chip chip-ok">Ready</span>
+          <span class="chip chip-ok">Stable</span>
         </header>
+
         <div class="card-body">
           <ul class="status-list">
             <li>
@@ -53,38 +54,33 @@
               <span class="value">Linked</span>
             </li>
             <li>
+              <span class="label">Memory Sync</span>
+              <span class="value">Active</span>
+            </li>
+            <li>
               <span class="label">Portal Map</span>
-              <span class="value">Synchronized</span>
+              <span class="value">4 Linked</span>
+            </li>
+            <li>
+              <span class="label">Active Task</span>
+              <span class="value" id="activeTaskValue">None</span>
             </li>
           </ul>
+
+          <div class="upcoming-block">
+            <h3>Upcoming Tasks</h3>
+            <ul class="upcoming-list">
+              <li>Build pages for each Work Environment portal.</li>
+              <li>Link Work Environment to backend services.</li>
+              <li>Prepare security layer (auth, roles, protections).</li>
+              <li>Stage new websites for deployment.</li>
+              <li>Run system checks after each update.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      <!-- Deployment Panel (separate from Nova, log-only) -->
-      <section class="card">
-        <header class="card-header">
-          <h2>Deployment Panel</h2>
-          <span class="chip chip-warn">Manual Control</span>
-        </header>
-        <div class="card-body deployment-grid">
-          <button class="btn deploy-btn" data-action="local-preview">
-            Local Preview
-          </button>
-          <button class="btn deploy-btn" data-action="vercel-deploy">
-            Vercel Deploy
-          </button>
-          <button class="btn deploy-btn" data-action="refresh-env">
-            Refresh Environment
-          </button>
-        </div>
-        <footer class="card-footer">
-          <p class="hint">
-            These controls are <strong>log-only</strong> — nothing auto-deploys from here.
-          </p>
-        </footer>
-      </section>
-
-      <!-- Nova Console -->
+      <!-- Nova Console (Facebook-style chat block) -->
       <section class="card card-log">
         <header class="card-header">
           <h2>Nova Console</h2>
@@ -104,6 +100,30 @@
             autocomplete="off"
           />
           <button id="sendCommand" class="btn small-btn">Send</button>
+        </footer>
+      </section>
+
+      <!-- Deployment Panel (separate from Nova, log-only) -->
+      <section class="card card-deploy">
+        <header class="card-header">
+          <h2>Deployment Panel</h2>
+          <span class="chip chip-warn">Manual Control</span>
+        </header>
+        <div class="card-body deployment-grid">
+          <button class="btn deploy-btn" data-action="local-preview">
+            Local Preview
+          </button>
+          <button class="btn deploy-btn" data-action="vercel-deploy">
+            Vercel Deploy
+          </button>
+          <button class="btn deploy-btn" data-action="refresh-env">
+            Refresh Environment
+          </button>
+        </div>
+        <footer class="card-footer">
+          <p class="hint">
+            These controls are <strong>log-only</strong> — nothing auto-deploys from here.
+          </p>
         </footer>
       </section>
     </section>
