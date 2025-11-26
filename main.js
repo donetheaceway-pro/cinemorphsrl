@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("click", () => panel.classList.remove("open"));
 
   // ------------------------------------------------------------
-  // NOVA — REAL AI CALL
+  // NOVA — REAL AI CALL (CHAT)
   // ------------------------------------------------------------
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -86,20 +86,28 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.appendChild(loading);
 
     try {
-      const res = await fetch("/api/actions", {
+      const res = await fetch("/api/nova", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({
+          message: text,
+          context: lastContext || ""
+        })
       });
 
       const data = await res.json();
       loading.remove();
 
-      appendMessage(data.reply, "nova");
-      speak(data.reply, "nova");
-      lastContext = data.reply;
+      if (data.reply) {
+        appendMessage(data.reply, "nova");
+        speak(data.reply, "nova");
+        lastContext = data.context || data.reply;
+      } else {
+        appendMessage("Nova: No response received.", "nova");
+      }
 
     } catch (err) {
+      console.error(err);
       loading.remove();
       appendMessage("Problem talking to SAI backend.", "nova");
       logTask("ERROR — Nova backend unreachable");
@@ -121,13 +129,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function runNightMode() {
-    appendMessage("Commander, Nova initiating end-of-day shutdown protocol.", "nova");
+    appendMessage(
+      "Commander, Nova initiating end-of-day shutdown protocol.",
+      "nova"
+    );
 
-    appendMessage(`
-• All tasks logged  
-• Objects stored  
-• Night Mode activated  
-• NoSa on quiet standby`, "nova");
+    appendMessage(
+      "• All tasks logged\n• Objects stored\n• Night Mode activated\n• NoSa on quiet standby",
+      "nova"
+    );
 
     appendMessage("NoSa: Daily log saved, Commander.", "nosa");
 
@@ -199,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initialGreeting.innerHTML = `<p>${getGreeting()}</p>`;
 
   // ------------------------------------------------------------
-  // ACTION COMMANDS → NoSa
+  // ACTION COMMANDS → NoSa (BUTTONS)
   // ------------------------------------------------------------
   cmdButtons.forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -209,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
       logTask("Commander issued: " + cmd);
 
       try {
-        const res = await fetch("/api/nova", {
+        const res = await fetch("/api/actions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -243,7 +253,12 @@ document.addEventListener("DOMContentLoaded", () => {
           else updateAlerts("green", "READY");
         }
 
+        if (data.preparedPatch) {
+          logTask("NoSa: Draft patch prepared and stored.");
+        }
+
       } catch (err) {
+        console.error(err);
         appendMessage("NoSa: Action system error.", "nosa");
         logTask("ERROR — NoSa failed");
       }
