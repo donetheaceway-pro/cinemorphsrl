@@ -1,125 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CinemorphSRL — SuperNova Control Deck</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8"/>
+  <title>CineVerse – V7.2</title>
+  <link rel="stylesheet" href="../styles.css"/>
 </head>
-
-<body class="animated">
-  <!-- Ambient animated background layer -->
-  <div id="spaceFx" aria-hidden="true"></div>
-
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-orb"></div>
-      <div>
-        <div class="brand-title">CinemorphSRL</div>
-        <div class="brand-sub">SuperNova Control Deck — Jet Black + Gold Edition</div>
-      </div>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>CineVerse Portal</h1>
+      <div class="sub">Movies universe zone.</div>
     </div>
-
-    <div class="top-actions">
-      <button id="motionToggle" class="ghost-btn" title="Toggle motion">
-        Motion: ON
-      </button>
-      <button id="novaBtn" class="nova-btn">
-        <span class="nova-dot"></span>
-        NOVA
-      </button>
+    <div class="top-right-group">
+      <button class="btn nova-btn" id="novaDeployButton">⭑ Launch & Deploy</button>
+      <button class="btn chat-toggle" id="novaChatToggle">Nova Chat</button>
+      <button class="btn" data-back>Back</button>
+      <span class="badge" id="portalStatus">Deploy ready</span>
     </div>
   </header>
 
-  <main class="wrap">
-    <!-- Mission Status -->
-    <section class="panel mission">
-      <div class="mission-left">
-        <h2>Mission Status</h2>
-        <p class="muted">Everything routed and deploy ready. You control the pace.</p>
+  <section class="grid">
+    <div class="card">
+      <h2>Studio</h2>
+      <p>Manage movie assets.</p>
+      <button class="btn" id="btnEnter">Enter Studio</button>
+    </div>
+    <div class="card">
+      <h2>Roadmap</h2>
+      <p>Upcoming obstacles.</p>
+      <button class="btn" id="btnRoadmap">View Roadmap</button>
+    </div>
+  </section>
 
-        <div id="missionBanner" class="mission-banner blink-ready">
-          <span class="banner-dot"></span>
-          <span id="missionText">“Cineverse portal UI expansion” is ready to deploy.</span>
-        </div>
-      </div>
+  <div class="log-wrap" id="logBody"></div>
+</div>
 
-      <div class="mission-right">
-        <div class="stat">
-          <div class="stat-label">Universe</div>
-          <div class="stat-value">CinemorphSRL</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Portals Online</div>
-          <div class="stat-value" id="portalsOnline">2</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Nova State</div>
-          <div class="stat-value working" id="novaState">WORKING</div>
-        </div>
+<div class="chat-panel" id="novaChatPanel">
+  <div class="chat-header">
+    <span>Nova Chat – CineVerse</span>
+    <button class="chat-close" id="chatCloseBtn">×</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <form class="chat-input-row" id="chatForm">
+    <input type="text" id="chatInput" placeholder="Ask Nova about CineVerse..." autocomplete="off"/>
+    <button type="submit">Send</button>
+  </form>
+</div>
 
-        <button id="deployNowTop" class="primary-btn">
-          Deploy Now
-        </button>
-        <div class="tiny muted" style="margin-top:6px;">
-          Deploy triggers your next obstacle once you commit to GitHub.
-        </div>
-      </div>
-    </section>
-
-    <!-- Portals -->
-    <section class="panel portals">
-      <div class="panel-head">
-        <h3>Portals</h3>
-        <p class="muted">Jump between portals instantly.</p>
-      </div>
-
-      <div class="portal-row">
-        <div class="portal-card">
-          <div class="portal-icon">🎬</div>
-          <div class="portal-info">
-            <div class="portal-title">Cineverse Movie Portal</div>
-            <div class="muted">Create, preview, and publish drops.</div>
-          </div>
-          <button class="chip-btn" onclick="location.href='cineverse-creator/index.html'">Open</button>
-        </div>
-
-        <div class="portal-card">
-          <div class="portal-icon">🎮</div>
-          <div class="portal-info">
-            <div class="portal-title">Game Portal</div>
-            <div class="muted">Builder, launches, and play tests.</div>
-          </div>
-          <button class="chip-btn" onclick="location.href='game-portal/index.html'">Open</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Nova Deploy Pipeline -->
-    <section class="panel pipeline">
-      <div class="panel-head">
-        <h3>Nova Deploy Pipeline</h3>
-        <p class="muted">One clean path. When an obstacle completes, you’ll get a blinking banner.</p>
-      </div>
-
-      <div id="pipelineList" class="pipeline-list">
-        <!-- Rows injected by main.js -->
-      </div>
-    </section>
-
-    <!-- Nova Log -->
-    <section class="panel log">
-      <div class="panel-head">
-        <h3>Nova Log</h3>
-        <p class="muted">What’s done, what’s working, what’s next.</p>
-      </div>
-
-      <div id="novaLog" class="log-list">
-        <!-- Entries injected by main.js -->
-      </div>
-    </section>
-  </main>
-
-  <script src="main.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
