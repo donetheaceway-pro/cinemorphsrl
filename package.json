@@ -1,0 +1,11 @@
+{
+  "name": "cinemorphsrl",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "openai": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
