@@ -3,44 +3,176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Samantha’s Universe — Command Deck</title>
+  <title>Samantha SuperNova Universe — Mission Control</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+<body class="theme-space">
+  <div class="bg-orbit"></div>
+  <div class="bg-noise"></div>
 
-<body>
-  <div class="universe-bg"></div>
-
+  <!-- TOP BAR -->
   <header class="topbar">
-    <div class="title-group">
-      <h1 class="title-glow">Samantha’s Universe</h1>
-      <p class="sub">SuperNova Command Deck</p>
+    <div class="top-left">
+      <div class="nova-orb"></div>
+      <div>
+        <h1 class="app-title">Samantha SuperNova Universe</h1>
+        <p class="app-sub">Mission Control • Nova + Nosa Command Deck</p>
+      </div>
     </div>
-    <button id="novaButton" class="nova-btn">★ Launch & Deploy</button>
+
+    <div class="top-right">
+      <div class="env-switcher">
+        <span>Environment</span>
+        <select id="envSelect">
+          <option value="space">Space Mission</option>
+          <option value="oasis">Oasis Bay</option>
+          <option value="volcano">Volcano Lab</option>
+          <option value="waterfall">Waterfall Retreat</option>
+          <option value="victorian">Victorian Study</option>
+        </select>
+      </div>
+
+      <button id="novaButton" class="btn-nova-primary">
+        <span>★ Launch & Deploy</span>
+      </button>
+    </div>
   </header>
 
-  <main class="dashboard-grid">
+  <!-- MAIN GRID -->
+  <main class="layout">
+    <!-- LEFT: UNIVERSE OVERVIEW -->
+    <section class="panel panel-main">
+      <h2 class="panel-title">Universe System Map</h2>
+      <p class="panel-sub">Live overview of your active worlds and portals.</p>
 
-    <a class="card neon-card" href="/cineverse-creator/">
-      <h2>CineVerse Creator</h2>
-      <p>Build cinematic worlds, timelines, and scenes.</p>
-    </a>
+      <div class="planet-wrap">
+        <div class="planet-orbit planet-orbit-1"></div>
+        <div class="planet-orbit planet-orbit-2"></div>
+        <div class="planet-orbit planet-orbit-3"></div>
+        <div class="planet-core"></div>
+      </div>
 
-    <a class="card neon-card" href="/game-portal/">
-      <h2>Game Portal</h2>
-      <p>Create, test, and launch interactive games.</p>
-    </a>
+      <div class="stats-row">
+        <div class="stat-pill">
+          <span class="stat-label">Active Worlds</span>
+          <span class="stat-value" id="statActive">8</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Pending Obstacles</span>
+          <span class="stat-value" id="statPending">5</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Deploy Ready</span>
+          <span class="stat-value" id="statReady">3</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Systems Stable</span>
+          <span class="stat-value">✅</span>
+        </div>
+      </div>
 
-    <a class="card neon-card" href="/api/nova">
-      <h2>Nova Engine</h2>
-      <p>Deploy engine & system log output.</p>
-    </a>
+      <div class="progress-wrap">
+        <div class="progress-row">
+          <span>Dashboard Build</span>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 72%;"></div>
+          </div>
+          <span class="progress-label">72%</span>
+        </div>
+        <div class="progress-row">
+          <span>Nosa Readiness</span>
+          <div class="progress-bar progress-bar-alt">
+            <div class="progress-fill" style="width: 41%;"></div>
+          </div>
+          <span class="progress-label">41%</span>
+        </div>
+      </div>
+    </section>
 
+    <!-- RIGHT: NOVA / NOSA + LOG -->
+    <section class="panel panel-side">
+      <div class="side-top">
+        <div class="ai-card ai-nova">
+          <div class="ai-header">
+            <span class="ai-label">Primary AI</span>
+            <span class="ai-name">Nova</span>
+          </div>
+          <p class="ai-meta">Universe architect & deploy ready engine.</p>
+          <div class="ai-meter">
+            <span>Focus</span>
+            <div class="meter-bar">
+              <div class="meter-fill" style="width: 88%;"></div>
+            </div>
+            <span class="meter-value">88%</span>
+          </div>
+        </div>
+
+        <div class="ai-card ai-nosa">
+          <div class="ai-header">
+            <span class="ai-label">Advisor AI</span>
+            <span class="ai-name">Nosa</span>
+          </div>
+          <p class="ai-meta">Risk guard, rule matrix, & “no going rogue” sentinel.</p>
+          <div class="ai-meter">
+            <span>Trust Calibration</span>
+            <div class="meter-bar meter-bar-alt">
+              <div class="meter-fill" id="nosaMeter" style="width: 32%;"></div>
+            </div>
+            <span class="meter-value" id="nosaMeterLabel">Lv. 1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="log-block">
+        <div class="log-header">
+          <span>Mission Log</span>
+          <button id="btnSimulate" class="btn-log-ghost">Simulate Activity</button>
+        </div>
+        <div id="logBody" class="log-window"></div>
+        <div class="log-footer">
+          <button id="btnClearLog" class="btn-log-ghost">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM: PORTALS -->
+    <section class="panel panel-portals">
+      <h2 class="panel-title">Universe Portals</h2>
+      <p class="panel-sub">Jump into any world with a single click.</p>
+
+      <div class="portal-grid">
+        <button class="portal-card" data-link="/game-portal/">
+          <span class="portal-tag">Game Hub</span>
+          <span class="portal-desc">Design & launch games.</span>
+        </button>
+
+        <button class="portal-card" data-link="/cineverse-creator/">
+          <span class="portal-tag">CineVerse Creator</span>
+          <span class="portal-desc">Scenes, timelines, and storyboards.</span>
+        </button>
+
+        <button class="portal-card" data-link="/acemycert/">
+          <span class="portal-tag">AceMyCert</span>
+          <span class="portal-desc">Certification prep engine.</span>
+        </button>
+
+        <button class="portal-card" data-link="/acemybusiness/">
+          <span class="portal-tag">AceMyBusiness</span>
+          <span class="portal-desc">Business systems control deck.</span>
+        </button>
+
+        <button class="portal-card" data-link="/marketplace/">
+          <span class="portal-tag">Marketplace</span>
+          <span class="portal-desc">Add-ons, packs, and upgrades.</span>
+        </button>
+
+        <button class="portal-card" data-link="/workforce-engine/">
+          <span class="portal-tag">Transformation Engine</span>
+          <span class="portal-desc">Mission-based workforce engine.</span>
+        </button>
+      </div>
+    </section>
   </main>
-
-  <section class="log-section">
-    <h3 class="log-title">Live System Log</h3>
-    <div id="logBody" class="log-window"></div>
-  </section>
 
   <script src="main.js"></script>
 </body>
