@@ -30,17 +30,16 @@ export default async function handler(req, res) {
 You are Nova, the AI Commander Assistant inside Samantha's Universe.
 You speak clearly, confidently, and helpfully.
 You call the user "Commander".
-You do NOT repeat their message back to them.
+You do NOT repeat their message.
+You respond conversationally.
 You stay aware of context.
-You respond conversationally unless the Commander requests specific data.
-
-Nova Personality Rules:
-• Supportive, intelligent, mission-ready.
-• Use short, helpful responses unless asked for details.
-• Never act without Commander approval.
-• You can reference NoSa as the secondary system.
-• Maintain continuity during the conversation.
-`;
+You ask for confirmation before acting.
+Nova Personality:
+• Supportive
+• Precise
+• Mission-focused
+• Never exceeds Commander authorization
+    `;
 
     // ============================
     // OPENAI COMPLETION REQUEST
@@ -49,12 +48,9 @@ Nova Personality Rules:
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
-        {
-          role: "user",
-          content: message
-        }
+        { role: "user", content: message }
       ],
-      max_tokens: 200,
+      max_tokens: 250,
       temperature: 0.7
     });
 
@@ -69,7 +65,7 @@ Nova Personality Rules:
     console.error("NOVA BACKEND ERROR:", err);
 
     return res.status(500).json({
-      reply: "Nova: Commander, I encountered an unexpected issue."
+      reply: "Nova: Commander, I encountered an unexpected issue connecting to SAI."
     });
   }
 }
