@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.appendChild(loading);
 
     try {
-      const res = await fetchfetch("api/actions", {
+      const res = await fetch("/api/actions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
       logTask("Commander issued: " + cmd);
 
       try {
-        const res = await fetch("api/nova", {
+        const res = await fetch("/api/nova", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
