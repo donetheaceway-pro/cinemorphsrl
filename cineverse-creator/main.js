@@ -1,117 +1,108 @@
-/* ============================================================
-   CineVerse Movie Portal — SuperNova clean main.js (deploy removed)
-   - No deploy button
-   - No deploy simulation
-   - Nova log + status + navigation preserved
-============================================================ */
+console.log("CineVerse V7.2 loaded");
 
-console.log("CineVerse main.js loaded");
-
-// -------------------------------
-//  TIME + LOG SUPPORT
-// -------------------------------
-function nowTime() {
+function now() {
   const d = new Date();
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  const ss = String(d.getSeconds()).padStart(2, "0");
-  return `[${hh}:${mm}:${ss}]`;
+  return `[${d.getHours().toString().padStart(2, "0")}:${d
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}:${d.getSeconds().toString().padStart(2, "0")}]`;
 }
-
-let logBody = document.getElementById("logBody");
-
-// If portal doesn't have a log window, create a small one
-function ensureMiniLog() {
-  if (logBody) return;
-
-  const mini = document.createElement("div");
-  mini.id = "novaMiniLog";
-  mini.style.cssText = `
-    position: fixed; right: 16px; bottom: 16px; width: 320px; max-height: 220px;
-    background: rgba(3,7,18,.92); color: #e5e7eb; border: 1px solid rgba(148,163,184,.5);
-    border-radius: 12px; padding: 10px; font-size: 12px; z-index: 9999;
-    box-shadow: 0 10px 30px rgba(0,0,0,.6); overflow: hidden;
-  `;
-
-  const title = document.createElement("div");
-  title.textContent = "Nova Log — CineVerse";
-  title.style.cssText = "font-weight:700; letter-spacing:.08em; margin-bottom:6px; opacity:.9;";
-  mini.appendChild(title);
-
-  logBody = document.createElement("div");
-  logBody.id = "logBody";
-  logBody.style.cssText = "max-height:180px; overflow:auto; display:flex; flex-direction:column; gap:4px;";
-  mini.appendChild(logBody);
-
-  document.body.appendChild(mini);
-}
-
-ensureMiniLog();
-
-function appendLog(level, tag, message, cls) {
+const logBody = document.getElementById("logBody");
+function log(l, t, m) {
   if (!logBody) return;
-  const line = document.createElement("div");
-  line.className = "log-line " + (cls || "");
-  line.style.cssText = `
-    display:flex; gap:6px; align-items:flex-start; line-height:1.2;
-    opacity:${cls === "dim" ? 0.7 : 1};
-  `;
-  line.innerHTML = `
-    <span style="opacity:.7;">${nowTime()}</span>
-    <span style="font-weight:700;">[${tag}]</span>
-    <span style="opacity:.9;">${level}</span>
-    <span>${message}</span>
-  `;
-  logBody.appendChild(line);
+  const div = document.createElement("div");
+  div.className = "log-line";
+  div.innerHTML = `<span class="log-time">${now()}</span><span>[${t}]</span><span>${l}</span><span>${m}</span>`;
+  logBody.appendChild(div);
   logBody.scrollTop = logBody.scrollHeight;
 }
 
-// -------------------------------
-//  PORTAL STATUS SUPPORT
-// -------------------------------
-const STATUS_KEY = "cineverse_portal_status";
-const statusEl = document.getElementById("portalStatus");
+log("READY", "CINEVERSE", "Portal online.");
 
-function setStatus(text) {
-  if (statusEl) statusEl.textContent = text;
-  localStorage.setItem(STATUS_KEY, text);
-  appendLog("INFO", "STATUS", `Portal status set to "${text}".`, "dim");
-}
-
-function loadStatus() {
-  const saved = localStorage.getItem(STATUS_KEY);
-  if (saved) {
-    if (statusEl) statusEl.textContent = saved;
-    appendLog("INFO", "STATUS", `Loaded saved status "${saved}".`, "dim");
-  } else {
-    appendLog("INFO", "STATUS", "No saved status found. Default: Deploy ready.", "dim");
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  appendLog("READY", "CINEVERSE", "Movie portal online. Universe link stable.", "");
-  loadStatus();
+// Back → Dashboard
+document.querySelector("[data-back]")?.addEventListener("click", () => {
+  log("NAV", "PORTAL", "Back to Dashboard");
+  location.href = "../index.html";
 });
 
-// -------------------------------
-//  ENTER / ROADMAP HOOKS
-// -------------------------------
+// Studio / Roadmap demo hooks
 document.getElementById("btnEnter")?.addEventListener("click", () => {
-  setStatus("In progress");
-  appendLog("OPEN", "STUDIO", "Entering CineVerse Movie Studio.", "");
+  log("OPEN", "STUDIO", "Opening CineVerse Studio");
+  alert("CineVerse Studio placeholder.");
 });
 
 document.getElementById("btnRoadmap")?.addEventListener("click", () => {
-  appendLog("INFO", "ROADMAP", "Next obstacles: Marketplace + Add-Ons + Voice Builder.", "dim");
-  alert("Roadmap loaded. Next obstacles are queued in your Universe.");
+  log("INFO", "ROADMAP", "Viewing CineVerse roadmap");
+  alert("Roadmap placeholder.");
 });
 
-// -------------------------------
-//  SAFE ROUTING BACK
-// -------------------------------
-document.querySelectorAll("[data-back='dashboard']").forEach(el => {
-  el.addEventListener("click", () => {
-    appendLog("NAV", "PORTAL", "Returning to Dashboard.", "dim");
-    window.location.href = "/";
-  });
+// Launch & Deploy visual simulation
+const novaDeploy = document.getElementById("novaDeployButton");
+const statusEl = document.getElementById("portalStatus");
+
+novaDeploy.onclick = () => {
+  statusEl.textContent = "In progress";
+  log("RUN", "NOVA", "CineVerse deploy simulation…");
+
+  const steps = [
+    "Checking movies…",
+    "Validating metadata…",
+    "Syncing Universe…",
+    "Finalizing…"
+  ];
+  let i = 0;
+  const t = setInterval(() => {
+    log("SCAN", "NOVA", steps[i]);
+    i++;
+    if (i >= steps.length) {
+      clearInterval(t);
+      statusEl.textContent = "Deploy ready";
+      log("DONE", "NOVA", "CineVerse ready.");
+    }
+  }, 600);
+};
+
+// ---------- Nova Chat (CineVerse) ----------
+const chatPanel = document.getElementById("novaChatPanel");
+const chatToggle = document.getElementById("novaChatToggle");
+const chatClose = document.getElementById("chatCloseBtn");
+const chatMessages = document.getElementById("chatMessages");
+const chatForm = document.getElementById("chatForm");
+const chatInput = document.getElementById("chatInput");
+
+function addChatMessage(who, text) {
+  if (!chatMessages) return;
+  const div = document.createElement("div");
+  div.className = "chat-msg" + (who === "You" ? " me" : "");
+  div.innerHTML = `<span class="who">${who}:</span><span>${text}</span>`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function openChat() {
+  chatPanel.classList.add("open");
+  if (!chatMessages.hasChildNodes()) {
+    addChatMessage(
+      "Nova",
+      "CineVerse chat ready. Ask about movies, pricing, or roadmap obstacles."
+    );
+  }
+}
+function closeChat() {
+  chatPanel.classList.remove("open");
+}
+
+chatToggle?.addEventListener("click", openChat);
+chatClose?.addEventListener("click", closeChat);
+
+chatForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = (chatInput.value || "").trim();
+  if (!text) return;
+  addChatMessage("You", text);
+  chatInput.value = "";
+  addChatMessage(
+    "Nova",
+    "In this demo I’m not calling the live AI yet, but this is where CineVerse-specific help will appear."
+  );
 });
