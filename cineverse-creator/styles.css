@@ -1,1 +1,84 @@
+body {
+  background: #0b0e17;
+  color: #f0f3ff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #151a2b;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #22283e;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nova-btn {
+  background: #4358ff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.nova-btn:hover {
+  background: #5267ff;
+}
+
+.container {
+  padding: 40px;
+}
+
+.panel {
+  background: #141a2c;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #1f253d;
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #2f3b62;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #3c4a7c;
+}
+
+.log-window {
+  background: #111623;
+  padding: 15px;
+  border-radius: 8px;
+  height: 220px;
+  overflow-y: auto;
+  border: 1px solid #1d2235;
+  font-size: 13px;
+}
+
+.log-line {
+  margin-bottom: 4px;
+  color: #9da4c8;
+}
 
