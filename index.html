@@ -3,39 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Samantha Universe — Control Console</title>
+  <title>Samantha’s Universe — Command Deck</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
+  <div class="universe-bg"></div>
+
   <header class="topbar">
-    <h1>Samantha’s SuperNova Dashboard</h1>
+    <div class="title-group">
+      <h1 class="title-glow">Samantha’s Universe</h1>
+      <p class="sub">SuperNova Command Deck</p>
+    </div>
     <button id="novaButton" class="nova-btn">★ Launch & Deploy</button>
   </header>
 
-  <main class="grid">
-    <a class="card" href="/cineverse-creator/">
-      <h2>Cineverse Creator</h2>
-      <p>Build and manage cinematic experiences.</p>
+  <main class="dashboard-grid">
+
+    <a class="card neon-card" href="/cineverse-creator/">
+      <h2>CineVerse Creator</h2>
+      <p>Build cinematic worlds, timelines, and scenes.</p>
     </a>
 
-    <a class="card" href="/game-portal/">
+    <a class="card neon-card" href="/game-portal/">
       <h2>Game Portal</h2>
-      <p>Create and manage games.</p>
+      <p>Create, test, and launch interactive games.</p>
     </a>
 
-    <a class="card" href="/api/nova">
+    <a class="card neon-card" href="/api/nova">
       <h2>Nova Engine</h2>
-      <p>AI engine status monitor.</p>
+      <p>Deploy engine & system log output.</p>
     </a>
+
   </main>
 
-  <section class="log-window">
-    <h3>Live Log</h3>
-    <div id="logBody"></div>
+  <section class="log-section">
+    <h3 class="log-title">Live System Log</h3>
+    <div id="logBody" class="log-window"></div>
   </section>
 
   <script src="main.js"></script>
 </body>
 </html>
-
