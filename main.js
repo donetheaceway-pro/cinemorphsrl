@@ -1,4 +1,13 @@
+// =====================================================================
+// SAMANTHA’S UNIVERSE — SUPERNOVA / NOSA MASTER FRONT-END ENGINE
+// FULL 100% REPLACE VERSION — CLEAN + CORRECT + CONTINUOUS VOICE MODE
+// =====================================================================
+
 document.addEventListener("DOMContentLoaded", () => {
+
+  // ==========================
+  // ELEMENT HOOKS
+  // ==========================
   const novaBtn = document.getElementById("novaButton");
   const panel = document.getElementById("novaChatPanel");
   const closeBtn = document.getElementById("closeNovaChat");
@@ -6,25 +15,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("novaChatText");
   const messages = document.getElementById("novaChatMessages");
   const cmdButtons = document.querySelectorAll(".cmd-btn");
+  const voiceToggle = document.getElementById("voiceModeToggle");
+  const talkBtn = document.getElementById("talkToNovaBtn");
+  const systemLog = document.getElementById("systemLog");
 
   let lastContext = "";
+  let isListening = false;
+  let recognition = null;
 
+  // ==========================
+  // HELPERS
+  // ==========================
   function appendMessage(text, who = "nova") {
-    const msg = document.createElement("div");
-    msg.className = `nova-msg nova-msg-${who}`;
-    msg.innerHTML = `<p>${text}</p>`;
-    messages.appendChild(msg);
+    const div = document.createElement("div");
+    div.className = `nova-msg nova-msg-${who}`;
+    div.innerHTML = `<p>${text}</p>`;
+    messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
+    lastContext = text;
   }
 
-  // Open + Close Chat Panel
+  function logTask(text) {
+    const entry = document.createElement("div");
+    entry.className = "log-entry";
+    entry.textContent = `• ${text}`;
+    systemLog.appendChild(entry);
+    systemLog.scrollTop = systemLog.scrollHeight;
+  }
+
+  // ==========================
+  // PANEL CONTROLS
+  // ==========================
   novaBtn.addEventListener("click", () => panel.classList.add("open"));
   closeBtn.addEventListener("click", () => panel.classList.remove("open"));
 
-  // ============================================================
-  // FORM SUBMISSION (User sends a message)
-  // ============================================================
-
+  // ==========================
+  // CHAT SUBMIT
+  // ==========================
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -44,98 +71,78 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/nova", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text })
       });
 
       const data = await res.json();
       loadingMsg.remove();
 
-      if (data.reply) {
-        appendMessage(data.reply, "nova");
-        lastContext = data.reply;
-      } else {
-        appendMessage("Nova: No response received.", "nova");
-      }
+      appendMessage(data.reply || "Nova: No response received.", "nova");
+      speak(data.reply, "nova");
+
     } catch (err) {
       loadingMsg.remove();
       appendMessage("Problem talking to SAI backend.", "nova");
-      logTask("Error: SAI backend issue.");
+      logTask("Error: SAI backend unreachable.");
     }
   });
 
-  // ============================================================
-  // END-OF-DAY / NIGHT SHUTDOWN PROTOCOL
-  // ============================================================
+  // =====================================================================
+  // NIGHT MODE — END-OF-DAY
+  // =====================================================================
 
-  function checkEndOfDayPhrases(text) {
-    const lowered = text.toLowerCase();
-
+  function checkEndOfDayPhrases(t) {
+    const x = t.toLowerCase();
     return (
-      lowered.includes("nova goodnight") ||
-      lowered.includes("nova night") ||
-      lowered.includes("nova, i'm tired") ||
-      lowered.includes("nova im tired") ||
-      lowered.includes("nova i am tired") ||
-      lowered.includes("nova i am ready for bed") ||
-      lowered.includes("nova, i am ready for bed") ||
-      lowered.includes("nosa close out the day") ||
-      lowered.includes("nosa close the day") ||
-      lowered.includes("end of day") ||
-      lowered.includes("end of shift")
+      x.includes("nova goodnight") ||
+      x.includes("night nova") ||
+      x.includes("nova night") ||
+      x.includes("heading to bed") ||
+      x.includes("end of day") ||
+      x.includes("end of shift")
     );
   }
 
   async function runEndOfDayProtocol() {
     appendMessage(
-      "Commander, Nova reporting. End-of-day protocol initiated. Preparing your final summary.",
+      "Commander, Nova reporting. End-of-day protocol initiated.",
       "nova"
     );
 
-    const summary = `
-      • Today’s tasks completed are logged.
-      • Pending objects have been saved.
-      • System has entered Night Mode.
-      • NoSa will maintain quiet standby.
-      • You may resume at any time, Commander.
-    `;
-
-    appendMessage(summary, "nova");
+    appendMessage(
+      `• Tasks logged.
+       • Objects saved.
+       • Night Mode active.
+       • NoSa standing by.`,
+      "nova"
+    );
 
     appendMessage(
-      "NoSa: Daily log saved. All systems in night mode, Commander.",
+      "NoSa: Daily log saved. Systems in night mode, Commander.",
       "nosa"
     );
 
-    logTask("End-of-day protocol completed and logged.");
+    logTask("Night protocol executed.");
+    localStorage.setItem("conciseMode", "true");
   }
 
-  // Listener for night triggers
   input.addEventListener("input", () => {
     const text = input.value.trim();
-    if (text && checkEndOfDayPhrases(text)) {
-      runEndOfDayProtocol();
-      localStorage.setItem("conciseMode", "true");
-    }
+    if (text && checkEndOfDayPhrases(text)) runEndOfDayProtocol();
   });
 
-  // ============================================================
-  // VOICE MODE + TALK-TO-NOVA
-  // ============================================================
-
-  const voiceToggle = document.getElementById("voiceModeToggle");
-  const talkBtn = document.getElementById("talkToNovaBtn");
-  let recognition;
-  let isListening = false;
+  // =====================================================================
+  // CONTINUOUS VOICE MODE — FULLY AUTOMATED LISTENING
+  // =====================================================================
 
   if ("webkitSpeechRecognition" in window) {
     recognition = new webkitSpeechRecognition();
-    recognition.continuous = false;
+    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
     recognition.onresult = (event) => {
       let transcript = "";
-
       for (let i = 0; i < event.results.length; i++) {
         transcript += event.results[i][0].transcript;
       }
@@ -148,19 +155,18 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     recognition.onerror = () => {
-      appendMessage(
-        "Nova: Commander, the voice input encountered an issue.",
-        "nova"
-      );
+      appendMessage("Nova: Voice input issue detected, Commander.", "nova");
+      if (isListening) recognition.start();
+    };
+
+    recognition.onend = () => {
+      if (isListening) recognition.start();
     };
   }
 
   talkBtn.addEventListener("click", () => {
     if (!recognition) {
-      appendMessage(
-        "Nova: Commander, voice input is not supported on this device.",
-        "nova"
-      );
+      appendMessage("Nova: Voice not supported on this device.", "nova");
       return;
     }
 
@@ -168,118 +174,41 @@ document.addEventListener("DOMContentLoaded", () => {
       isListening = true;
       talkBtn.classList.add("listening");
       talkBtn.textContent = "🟢 Listening…";
-
       appendMessage("Nova: Listening, Commander.", "nova");
       recognition.start();
     } else {
       isListening = false;
       talkBtn.classList.remove("listening");
       talkBtn.textContent = "🎤 Talk to Nova";
-
       recognition.stop();
     }
   });
 
-  // ============================================================
-  // ROTATING GREETING
-  // ============================================================
-
-  function getRotatingGreeting() {
-    const options = [
-      "Nova online, Commander. Systems green.",
-      "Nova here — fully synced and ready.",
-      "Commander, Nova reporting. System stable.",
-      "Greetings Commander, Nova is online.",
-      "Nova active — ready when you are.",
-      "Commander, systems green and standing by."
-    ];
-    return options[Math.floor(Math.random() * options.length)];
-  }
-
-  const initialGreeting = document.getElementById("initialGreeting");
-  initialGreeting.innerHTML = `<p>${getRotatingGreeting()}</p>`;
-
-  // ============================================================
-  // ALERT SYSTEM
-  // ============================================================
-
-  const alertBadge = document.getElementById("alertBadge");
-  const alertBanner = document.getElementById("alertBanner");
-
-  function updateAlerts(color, message) {
-    alertBadge.className = `alert-badge ${color}`;
-    alertBadge.textContent = message;
-
-    alertBanner.className = `alert-banner ${color}`;
-    alertBanner.textContent = `System Status: ${message}`;
-  }
-
-  updateAlerts("green", "READY — Build State Active");
-
-  // ============================================================
-  // SYSTEM LOGGING
-  // ============================================================
-
-  const systemLog = document.getElementById("systemLog");
-
-  function logTask(taskText) {
-    const entry = document.createElement("div");
-    entry.className = "log-entry";
-    entry.textContent = `• ${taskText}`;
-    systemLog.appendChild(entry);
-    systemLog.scrollTop = systemLog.scrollHeight;
-  }
-
-  // Restore session  
-  const lastSession = localStorage.getItem("currentObject");
-  if (lastSession) {
-    appendMessage(
-      `Nova: Commander, resuming our previous object — ${lastSession}.`,
-      "nova"
-    );
-  }
-
-  function syncCurrentObject(obj) {
-    if (!obj) return;
-    localStorage.setItem("currentObject", obj);
-    document.getElementById("currentObject").textContent = obj;
-  }
-
-  // ============================================================
-  // COMMAND BUTTON ROUTING + VOICE OUTPUT
-  // ============================================================
-
+  // =====================================================================
+  // NOVA + NOSA SPEECH OUTPUT
+  // =====================================================================
   function speak(text, who = "nova") {
     if (!("speechSynthesis" in window)) return;
     if (!voiceToggle || !voiceToggle.checked) return;
     if (!text) return;
 
-    const utter = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = who === "nova" ? 1.05 : 0.95;
+    u.pitch = who === "nova" ? 1.1 : 0.8;
 
-    if (who === "nova") {
-      utter.rate = 1.0;
-      utter.pitch = 1.1;
-    } else {
-      utter.rate = 0.9;
-      utter.pitch = 0.8;
-    }
-
-    window.speechSynthesis.speak(utter);
+    window.speechSynthesis.speak(u);
   }
+
+  // =====================================================================
+  // COMMAND BUTTONS → BACKEND /api/actions
+  // =====================================================================
 
   cmdButtons.forEach(btn => {
     btn.addEventListener("click", async () => {
-      const cmd = btn.getAttribute("data-cmd");
-      const label =
-        cmd === "approve" ? "Approve" :
-        cmd === "implement" ? "Implement" :
-        cmd === "apply" ? "Apply change" :
-        cmd === "decline" ? "Decline" :
-        cmd === "prepare_patch" ? "Prepare Patch" :
-        cmd;
+      const cmd = btn.dataset.cmd;
 
-      appendMessage(`Command: ${label}`, "user");
-      logTask(`Commander issued command: ${label}`);
+      appendMessage(`Command: ${cmd}`, "user");
+      logTask(`Commander issued ${cmd}`);
 
       try {
         const res = await fetch("/api/actions", {
@@ -287,8 +216,8 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             command: cmd,
-            context: lastContext || ""
-          }),
+            context: lastContext
+          })
         });
 
         const data = await res.json();
@@ -305,36 +234,27 @@ document.addEventListener("DOMContentLoaded", () => {
           speak(data.nova, "nova");
         }
 
-        if (data.currentObject) {
-          syncCurrentObject(data.currentObject);
-        }
-
-        if (data.mode) {
-          document.getElementById("currentMode").textContent = data.mode;
-
-          const modeLower = data.mode.toLowerCase();
-          if (modeLower.includes("deploy")) {
-            updateAlerts("purple", "COMMAND — Deploy Mode");
-          } else if (modeLower.includes("idle")) {
-            updateAlerts("blue", "INFO — Idle / Review");
-          } else if (modeLower.includes("build")) {
-            updateAlerts("green", "READY — Build State Active");
-          }
-        }
-
-        if (data.preparedPatch) {
-          logTask("NoSa: Draft patch prepared and stored.");
-        }
-
       } catch (err) {
-        appendMessage(
-          "NoSa: Commander, there was an issue handling that action.",
-          "nosa"
-        );
-        logTask("Error: NoSa action issue.");
-        speak("Commander, there was an issue handling that action.", "nosa");
+        appendMessage("NoSa: Commander, action failed.", "nosa");
       }
     });
   });
 
-}); // END DOMContentLoaded
+  // =====================================================================
+  // GREETING
+  // =====================================================================
+
+  const greetList = [
+    "Nova online, Commander.",
+    "Systems green. Nova active.",
+    "Nova reporting — fully synced.",
+    "Commander, Nova ready.",
+    "Operational. Standing by, Commander."
+  ];
+
+  const initialGreeting = document.getElementById("initialGreeting");
+  if (initialGreeting) {
+    initialGreeting.innerHTML = `<p>${greetList[Math.floor(Math.random() * greetList.length)]}</p>`;
+  }
+
+}); // END DOM LOADED
