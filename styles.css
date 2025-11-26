@@ -1,1 +1,59 @@
+body {
+  background: #0c0f18;
+  color: #e4e8ff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.topbar {
+  background: #141827;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grid {
+  display: flex;
+  gap: 20px;
+  padding: 40px;
+}
+
+.card {
+  background: #1a1f33;
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: white;
+  flex: 1;
+  transition: 0.2s;
+}
+
+.card:hover {
+  background: #232a49;
+}
+
+.nova-btn {
+  background: #3b5bfd;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  border: none;
+}
+
+.log-window {
+  margin-top: 40px;
+  padding: 20px;
+  background: #141827;
+}
+
+#logBody {
+  height: 200px;
+  overflow-y: auto;
+  font-size: 13px;
+  padding: 10px;
+  background: #1d2236;
+  border-radius: 8px;
+}
 
