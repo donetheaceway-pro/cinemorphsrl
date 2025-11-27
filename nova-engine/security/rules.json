@@ -1,1 +1,16 @@
-{}
+{
+  "blockedPatterns": [
+    {
+      "pattern": "delete .*all",
+      "reason": "Destructive 'delete all' style operation is not allowed."
+    },
+    {
+      "pattern": "drop table",
+      "reason": "Database-destructive commands are blocked."
+    },
+    {
+      "pattern": "format .*drive",
+      "reason": "Drive formatting operations are not allowed."
+    }
+  ]
+}
