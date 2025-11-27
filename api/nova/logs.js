@@ -1,1 +1,1 @@
-
+// Nova Engine logs endpoint placeholder
